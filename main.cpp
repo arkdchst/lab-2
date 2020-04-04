@@ -82,9 +82,35 @@ public:
 		this->size = size;
 	}
 
+	LinkedList(LinkedList<T> &list1, LinkedList<T> &list2) : LinkedList(){ //concat
+		Record *ptr1 = list1.head;
+		Record *ptr2 = list2.head;
+
+		Record **ptr = &head;
+		while(ptr1 != nullptr){
+			*ptr = new Record{
+				ptr1->item,
+				ptr1->next
+			};
+
+			ptr1 = ptr1->next;
+			ptr = &((*ptr)->next);
+		}
+		while(ptr2 != nullptr){
+			*ptr = new Record{
+				ptr2->item,
+				ptr2->next
+			};
+
+			ptr2 = ptr2->next;
+			ptr = &((*ptr)->next);
+		}
+
+		this->size = list1.size + list2.size;
+	}
 
 	LinkedList(const LinkedList<T> &list, int start, int end) : LinkedList(){
-		if(start < 0 || start > list.size) throw new std::out_of_range(INDEX_OUT_OF_RANGE_MESSAGE);
+		if(start < 0 || start >= list.size) throw new std::out_of_range(INDEX_OUT_OF_RANGE_MESSAGE);
 		if(end < 0 || end > list.size) throw new std::out_of_range(INDEX_OUT_OF_RANGE_MESSAGE);
 		if(start > end) throw new std::logic_error("end must be not less than start");
 
@@ -137,16 +163,16 @@ public:
 		return ptr->item;
 	}
 
-	int getSize(){
+	int getSize()const {
 		return size;
 	}
 	
 	void append(T item){
-		Record *ptr = head;
-		while(ptr->next != nullptr) ptr = ptr->next;
+		Record **ptr = &head;
+		while(*ptr != nullptr) ptr = &((*ptr)->next);
 
-		ptr->next = new Record;
-		ptr->next.item = item;
+		(*ptr) = new Record;
+		(*ptr)->item = item;
 
 		size++;
 	}
@@ -176,7 +202,7 @@ public:
 		size++;
 	}
 
-	// LinkedList<T>* Concat(LinkedList<T> *list)
+
 };
 
 
