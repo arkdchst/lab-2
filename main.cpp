@@ -57,6 +57,129 @@ public:
 
 
 
+template <typename T> class LinkedList{
+private:
+	struct Record{
+		T item;
+		Record *next = nullptr;
+	};
+
+	Record *head = nullptr;
+	int size = 0;
+public:
+	LinkedList() {}
+
+	LinkedList(T *items, int size) : LinkedList() {
+		if(size < 0) throw new std::length_error(NEGATIVE_SIZE_MESSAGE);
+
+		Record **ptr = &head;
+		for(int i = 0; i < size; i++){
+			*ptr = new Record;
+			(*ptr)->item = items[i];
+			ptr = &((*ptr)->next);
+		}
+
+		this->size = size;
+	}
+
+
+	LinkedList(const LinkedList<T> &list, int start, int end) : LinkedList(){
+		if(start < 0 || start > list.size) throw new std::out_of_range(INDEX_OUT_OF_RANGE_MESSAGE);
+		if(end < 0 || end > list.size) throw new std::out_of_range(INDEX_OUT_OF_RANGE_MESSAGE);
+		if(start > end) throw new std::logic_error("end must be not less than start");
+
+		Record *listPtr = list.head;
+
+		Record **ptr = &head;
+		{
+		int i = 0;
+		for(i = 0; i < end; i++){
+			if(i >= start){
+				*ptr = new Record;
+				(*ptr)->item = listPtr->item;
+				ptr = &((*ptr)->next);
+			}
+
+			listPtr = listPtr->next;
+		}
+		}
+		size = end - start;
+	}
+
+
+	LinkedList(const LinkedList<T> &list) :
+		LinkedList(list, 0, list.size) {}
+
+	T getFirst() const {
+		if(size == 0) throw new std::length_error("size is 0");
+
+		return head->item;
+	}
+
+	T getLast() const {
+		if(size == 0) throw new std::length_error("size is 0");
+
+		Record *ptr = head;
+		while(ptr->next != nullptr) ptr = ptr->next;
+		return ptr->item;
+	}
+	
+	T get(int index) const {
+		if(index < 0 || index >= size) throw new std::out_of_range(INDEX_OUT_OF_RANGE_MESSAGE);
+
+
+		Record *ptr;
+		{
+		int i = 0;
+		for(i = 0, ptr = head; i < index; i++, ptr = ptr->next);
+		}
+
+		return ptr->item;
+	}
+
+	int getSize(){
+		return size;
+	}
+	
+	void append(T item){
+		Record *ptr = head;
+		while(ptr->next != nullptr) ptr = ptr->next;
+
+		ptr->next = new Record;
+		ptr->next.item = item;
+
+		size++;
+	}
+	
+	void prepend(T item){
+		Record *ptr = new Record{item, head};
+		head = ptr;
+
+		size++;		
+	}
+
+	void insertAt(T item, int index){
+		if(index < 0 || index > size) throw new std::out_of_range(INDEX_OUT_OF_RANGE_MESSAGE);
+
+
+		Record preHead = {(T)0, head};
+		Record *ptr;
+
+		{
+		int i = 0;
+		for(i = 0, ptr = &preHead; i < index; i++, ptr = ptr->next);
+		}
+
+		ptr->next = new Record{item, ptr->next};
+		head = preHead.next;
+
+		size++;
+	}
+
+	// LinkedList<T>* Concat(LinkedList<T> *list)
+};
+
+
 
 
 int main(int argc, const char *argv[]){
