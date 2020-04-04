@@ -10,8 +10,8 @@
 
 template <typename T> class DynamicArray{
 private:
-	T *data;
-	int size;
+	T *data = nullptr;
+	int size = 0;
 
 public:
 	DynamicArray(int size){
@@ -22,12 +22,12 @@ public:
 	}
 
 
-	DynamicArray(T *data, int count) : DynamicArray(count) {
-		std::memcpy(this->data, data, count * sizeof(T));
+	DynamicArray(T *data, int size) : DynamicArray(size) {
+		std::memcpy(this->data, data, size * sizeof(T));
 	}
 
-	DynamicArray(const DynamicArray<T> &dynamicArray) : 
-		DynamicArray(dynamicArray.data, dynamicArray.size) {}
+	DynamicArray(const DynamicArray<T> &array) : 
+		DynamicArray(array.data, array.size) {}
 
 
 	T get(int index) const {
