@@ -36,9 +36,7 @@ public:
 		return data[index];
 	}
 
-	int getSize() const {
-		return size;
-	}
+	int getSize() const { return size; }
 
 	void set(T value, int index){
 		if(index < 0 || index >= size) throw new std::out_of_range(INDEX_OUT_OF_RANGE_MESSAGE);
@@ -109,32 +107,20 @@ public:
 		this->size = list1.size + list2.size;
 	}
 
-	LinkedList(const LinkedList<T> &list, int start, int end) : LinkedList(){
-		if(start < 0 || start >= list.size) throw new std::out_of_range(INDEX_OUT_OF_RANGE_MESSAGE);
-		if(end < 0 || end > list.size) throw new std::out_of_range(INDEX_OUT_OF_RANGE_MESSAGE);
-		if(start > end) throw new std::logic_error("end must be not less than start");
 
-		Record *listPtr = list.head;
+	LinkedList(const LinkedList<T> &list){
+		Record *ptr = list.head;
+		Record **newPtr = &head;
 
-		Record **ptr = &head;
-		{
-		int i = 0;
-		for(i = 0; i < end; i++){
-			if(i >= start){
-				*ptr = new Record;
-				(*ptr)->item = listPtr->item;
-				ptr = &((*ptr)->next);
-			}
+		for(int i = 0; i < list.size; i++, ptr = ptr->next){
+			*newPtr = new Record;
+			(*newPtr)->item = ptr->item;
+			newPtr = &((*newPtr)->next);
 
-			listPtr = listPtr->next;
 		}
-		}
-		size = end - start;
+
+		size = list.size;
 	}
-
-
-	LinkedList(const LinkedList<T> &list) :
-		LinkedList(list, 0, list.size) {}
 
 	T getFirst() const {
 		if(size == 0) throw new std::length_error("size is 0");
@@ -163,9 +149,32 @@ public:
 		return ptr->item;
 	}
 
-	int getSize()const {
-		return size;
+	LinkedList<T> getSublist(int start, int end) const {
+		if(start < 0 || start >= size) throw new std::out_of_range(INDEX_OUT_OF_RANGE_MESSAGE);
+		if(end < 0 || end > size) throw new std::out_of_range(INDEX_OUT_OF_RANGE_MESSAGE);
+		if(start > end) throw new std::logic_error("end must be not less than start");
+
+		LinkedList<T> newList;
+
+
+		Record *ptr = head;
+		Record **newPtr = &newList.head;
+
+		for(int i = 0; i < end; i++, ptr = ptr->next){
+			if(i >= start){
+				*newPtr = new Record;
+				(*newPtr)->item = ptr->item;
+				newPtr = &((*newPtr)->next);
+			}
+
+		}
+
+		newList.size = end - start;
+
+		return newList;
 	}
+
+	int getSize() const { return size; }
 	
 	void append(T item){
 		Record **ptr = &head;
