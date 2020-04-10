@@ -12,7 +12,6 @@ template <typename T> class DynamicArray{
 private:
 	T *data = nullptr;
 	int size = 0;
-
 public:
 	DynamicArray(int size){
 		if(size < 0) throw new std::length_error(NEGATIVE_SIZE_MESSAGE);
@@ -216,8 +215,38 @@ public:
 
 
 
+template <typename T> class Sequence{
+protected:
+	int size = 0;
+public:
+	virtual T getFirst() const = 0;
+	virtual T getLast() const = 0;
+	virtual T get(int index) const = 0;
+
+	int getSize(){ return size; }
+
+	virtual Sequence<T>& getSubsequence(int start, int end) = 0;
+
+	/*
+	ArraySequence (T* items, int count);
+	LinkedListSequence (T* items, int count);
+	ArraySequence ();
+	LinkedListSequence ();
+	ArraySequence (LinkedList <T> & list const);
+	LinkedListSequence (LinkedList <T> & list const);
+	Sequence<T> GetSubsequence(int startIndex, int endIndex);
+	int GetLength();
+	void Append(T item);
+	void Prepend(T item);
+	void InsertAt(T item, int index);
+	Sequence <T>* Concat(Sequence <T> *list);*/
+};
+
+
 
 int main(int argc, const char *argv[]){
+	ArraySequence<int> a;
+	a.getSubsequence(1,3);
 
 	return 0;
 }
