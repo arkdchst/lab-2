@@ -12,13 +12,13 @@ template <typename T> class DynamicArray{
 private:
 	T *data = nullptr;
 	int size = 0;
-
 public:
-	DynamicArray(int size){
+	DynamicArray() : size(0) {}
+
+	DynamicArray(int size) : size(size) {
 		if(size < 0) throw new std::length_error(NEGATIVE_SIZE_MESSAGE);
 
 		this->data = (T*)calloc(size, sizeof(T));
-		this->size = size;
 	}
 
 
@@ -65,7 +65,7 @@ private:
 	Record *head = nullptr;
 	int size = 0;
 public:
-	LinkedList() {}
+	LinkedList() : size(0) {}
 
 	LinkedList(T *items, int size) : LinkedList() {
 		if(size < 0) throw new std::length_error(NEGATIVE_SIZE_MESSAGE);
@@ -229,6 +229,87 @@ public:
 
 };
 
+
+
+template <typename T> class Sequence{
+public:
+	int size = 0;
+public:
+	Sequence(){}
+
+	virtual T getFirst() const = 0;
+	virtual T getLast() const = 0;
+	virtual T get(int index) const = 0;
+	virtual int getSize() const { return size; }
+
+
+	virtual Sequence<T>* getSubsequence(int start, int end) const = 0;
+
+	virtual void append(const T &item) = 0;
+	virtual void prepend(const T &item) = 0;
+	virtual void insertAt(const T &item, int index) = 0;
+
+	virtual Sequence<T>* concat(const Sequence<T>& seq) const = 0;
+
+};
+
+
+template <typename T> class ArraySeqeunce : public Sequence<T>{
+protected:
+	DynamicArray<T> *array;
+
+public:
+	ArraySeqeunce() : Sequence<T>() {
+		array = new DynamicArray<T>();
+		this->size = 0;
+	}
+
+	ArraySeqeunce(T *items, int size) : Sequence<T>() {
+		array = new DynamicArray<T>(items, size);
+		this->size = size;
+	}
+
+
+	virtual T getFirst() const override {
+		return array->get(0);
+	}
+
+	virtual T getLast() const override {
+		return array->get(this->size - 1);
+	}
+
+	virtual T get(int index) const override {
+		return array->get(index);
+	}
+
+
+	virtual Sequence<T>* getSubsequence(int start, int end) const = 0;
+
+	virtual void append(const T &item) override {
+		array->resize(this->size + 1);
+		array->set(item, this->size);
+		this->size++;
+	}
+
+	virtual void prepend(const T &item) override {
+		array->resize(this->size + 1);
+		T t1 = array->get(0);
+		T t2;
+		for(int i = 0; i < this->size; i++){
+			t2 = t1;
+			t1 = array->get(i + 1);
+			array->set(t2, i + 1);
+		}
+		array->set(item, 0);
+
+		this->size++;
+	}
+
+	virtual void insertAt(const T &item, int index) = 0;
+
+	virtual Sequence<T>* concat(const Sequence<T>& seq) const = 0;
+
+};
 
 
 
