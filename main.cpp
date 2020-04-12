@@ -18,7 +18,7 @@ public:
 	DynamicArray(int size) : size(size) {
 		if(size < 0) throw new std::length_error(NEGATIVE_SIZE_MESSAGE);
 
-		this->data = (T*)calloc(size, sizeof(T));
+		this->data = (T*)calloc(size, sizeof(T)); //Better use new 
 	}
 
 
