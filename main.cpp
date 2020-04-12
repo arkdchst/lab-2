@@ -29,6 +29,11 @@ public:
 	DynamicArray(const DynamicArray<T> &array) : 
 		DynamicArray(array.data, array.size) {}
 
+	~DynamicArray(){
+		delete[] data;
+		size = 0;
+	}
+
 
 	T get(int index) const {
 		if(index < 0 || index >= size) throw new std::out_of_range(INDEX_OUT_OF_RANGE_MESSAGE);
@@ -94,6 +99,17 @@ public:
 
 		size = list.size;
 	}
+
+	~LinkedList(){
+		Record *ptr = head;
+		Record *next;
+		while(ptr != nullptr){
+			next = ptr->next;
+			delete ptr;
+			ptr = next;
+		}
+	}
+
 
 	T getFirst() const {
 		if(size == 0) throw new std::length_error("size is 0");
@@ -269,6 +285,9 @@ public:
 		this->size = size;
 	}
 
+	~ArraySeqeunce(){
+		delete array;
+	}
 
 	virtual T getFirst() const override {
 		return array->get(0);
@@ -314,6 +333,9 @@ public:
 
 
 int main(int argc, const char *argv[]){
+	int *arr = new int[0]{};
+	LinkedList<int> *list= new LinkedList<int>(arr, 0);
+	delete list;
 
 	return 0;
 }
