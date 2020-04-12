@@ -38,7 +38,7 @@ public:
 
 	int getSize() const { return size; }
 
-	void set(T value, int index){
+	void set(const T &value, int index){
 		if(index < 0 || index >= size) throw new std::out_of_range(INDEX_OUT_OF_RANGE_MESSAGE);
 
 		data[index] = value;
@@ -78,33 +78,6 @@ public:
 		}
 
 		this->size = size;
-	}
-
-	LinkedList(LinkedList<T> &list1, LinkedList<T> &list2) : LinkedList(){ //concat
-		Record *ptr1 = list1.head;
-		Record *ptr2 = list2.head;
-
-		Record **ptr = &head;
-		while(ptr1 != nullptr){
-			*ptr = new Record{
-				ptr1->item,
-				ptr1->next
-			};
-
-			ptr1 = ptr1->next;
-			ptr = &((*ptr)->next);
-		}
-		while(ptr2 != nullptr){
-			*ptr = new Record{
-				ptr2->item,
-				ptr2->next
-			};
-
-			ptr2 = ptr2->next;
-			ptr = &((*ptr)->next);
-		}
-
-		this->size = list1.size + list2.size;
 	}
 
 
@@ -149,16 +122,16 @@ public:
 		return ptr->item;
 	}
 
-	LinkedList<T> getSublist(int start, int end) const {
+	LinkedList<T>* getSublist(int start, int end) const {
 		if(start < 0 || start >= size) throw new std::out_of_range(INDEX_OUT_OF_RANGE_MESSAGE);
 		if(end < 0 || end > size) throw new std::out_of_range(INDEX_OUT_OF_RANGE_MESSAGE);
 		if(start > end) throw new std::logic_error("end must be not less than start");
 
-		LinkedList<T> newList;
+		LinkedList<T> *newList = new LinkedList<T>();
 
 
 		Record *ptr = head;
-		Record **newPtr = &newList.head;
+		Record **newPtr = &newList->head;
 
 		for(int i = 0; i < end; i++, ptr = ptr->next){
 			if(i >= start){
@@ -169,14 +142,14 @@ public:
 
 		}
 
-		newList.size = end - start;
+		newList->size = end - start;
 
 		return newList;
 	}
 
 	int getSize() const { return size; }
 	
-	void append(T item){
+	void append(const T &item){
 		Record **ptr = &head;
 		while(*ptr != nullptr) ptr = &((*ptr)->next);
 
@@ -186,14 +159,14 @@ public:
 		size++;
 	}
 	
-	void prepend(T item){
+	void prepend(const T &item){
 		Record *ptr = new Record{item, head};
 		head = ptr;
 
 		size++;		
 	}
 
-	void insertAt(T item, int index){
+	void insertAt(const T &item, int index){
 		if(index < 0 || index > size) throw new std::out_of_range(INDEX_OUT_OF_RANGE_MESSAGE);
 
 
@@ -209,6 +182,35 @@ public:
 		head = preHead.next;
 
 		size++;
+	}
+
+	LinkedList<T>* concat(LinkedList<T> &list) const {
+		Record *ptr1 = head;
+		Record *ptr2 = list.head;
+
+		LinkedList<T> *newList = new LinkedList<T>();
+		Record **ptr = &(newList->head);
+		while(ptr1 != nullptr){
+			*ptr = new Record{
+				ptr1->item,
+				ptr1->next
+			};
+
+			ptr1 = ptr1->next;
+			ptr = &((*ptr)->next);
+		}
+		while(ptr2 != nullptr){
+			*ptr = new Record{
+				ptr2->item,
+				ptr2->next
+			};
+
+			ptr2 = ptr2->next;
+			ptr = &((*ptr)->next);
+		}
+
+		newList->size = size + list.size;
+		return newList;
 	}
 
 
