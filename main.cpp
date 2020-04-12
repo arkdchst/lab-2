@@ -122,6 +122,19 @@ public:
 		return ptr->item;
 	}
 
+	void set(const T &item, int index){
+		if(index < 0 || index >= size) throw new std::out_of_range(INDEX_OUT_OF_RANGE_MESSAGE);
+
+
+		Record *ptr;
+		{
+		int i = 0;
+		for(i = 0, ptr = head; i < index; i++, ptr = ptr->next);
+		}
+
+		ptr->item = item;
+	}
+
 	LinkedList<T>* getSublist(int start, int end) const {
 		if(start < 0 || start >= size) throw new std::out_of_range(INDEX_OUT_OF_RANGE_MESSAGE);
 		if(end < 0 || end > size) throw new std::out_of_range(INDEX_OUT_OF_RANGE_MESSAGE);
