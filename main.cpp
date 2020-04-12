@@ -197,7 +197,7 @@ public:
 		size++;
 	}
 
-	LinkedList<T>* concat(LinkedList<T> &list) const {
+	LinkedList<T>* concat(const LinkedList<T> &list) const {
 		Record *ptr1 = head;
 		Record *ptr2 = list.head;
 
