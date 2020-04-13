@@ -18,7 +18,7 @@ public:
 	DynamicArray(int size) : size(size) {
 		if(size < 0) throw new std::length_error(NEGATIVE_SIZE_MESSAGE);
 
-		this->data = (T*)calloc(size, sizeof(T));
+		this->data = new T[size];
 	}
 
 
@@ -52,7 +52,11 @@ public:
 	void resize(int size){
 		if(size < 0) throw new std::length_error(NEGATIVE_SIZE_MESSAGE);
 
-		data = 	(T*)realloc(data, size * sizeof(T));
+		T *newData = new T[size];
+		std::memcpy(newData, data, (this->size > size ? size : this->size) * sizeof(T));
+		delete[] data;
+		data = newData;
+
 		this->size = size;
 	}
 
@@ -333,9 +337,6 @@ public:
 
 
 int main(int argc, const char *argv[]){
-	int *arr = new int[0]{};
-	LinkedList<int> *list= new LinkedList<int>(arr, 0);
-	delete list;
 
 	return 0;
 }
