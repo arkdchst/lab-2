@@ -16,7 +16,7 @@ public:
 	DynamicArray() : size(0) {}
 
 	DynamicArray(int size) : size(size) {
-		if(size < 0) throw new std::length_error(NEGATIVE_SIZE_MESSAGE);
+		if(size < 0) throw std::length_error(NEGATIVE_SIZE_MESSAGE);
 
 		this->data = new T[size];
 	}
@@ -36,7 +36,7 @@ public:
 
 
 	T get(int index) const {
-		if(index < 0 || index >= size) throw new std::out_of_range(INDEX_OUT_OF_RANGE_MESSAGE);
+		if(index < 0 || index >= size) throw std::out_of_range(INDEX_OUT_OF_RANGE_MESSAGE);
 
 		return data[index];
 	}
@@ -44,13 +44,13 @@ public:
 	int getSize() const { return size; }
 
 	void set(const T &value, int index){
-		if(index < 0 || index >= size) throw new std::out_of_range(INDEX_OUT_OF_RANGE_MESSAGE);
+		if(index < 0 || index >= size) throw std::out_of_range(INDEX_OUT_OF_RANGE_MESSAGE);
 
 		data[index] = value;
 	}	
 
 	void resize(int size){
-		if(size < 0) throw new std::length_error(NEGATIVE_SIZE_MESSAGE);
+		if(size < 0) throw std::length_error(NEGATIVE_SIZE_MESSAGE);
 
 		T *newData = new T[size];
 		std::memcpy(newData, data, (this->size > size ? size : this->size) * sizeof(T));
@@ -77,7 +77,7 @@ public:
 	LinkedList() : size(0) {}
 
 	LinkedList(T *items, int size) : LinkedList() {
-		if(size < 0) throw new std::length_error(NEGATIVE_SIZE_MESSAGE);
+		if(size < 0) throw std::length_error(NEGATIVE_SIZE_MESSAGE);
 
 		Record **ptr = &head;
 		for(int i = 0; i < size; i++){
@@ -116,13 +116,13 @@ public:
 
 
 	T getFirst() const {
-		if(size == 0) throw new std::length_error("size is 0");
+		if(size == 0) throw std::length_error("size is 0");
 
 		return head->item;
 	}
 
 	T getLast() const {
-		if(size == 0) throw new std::length_error("size is 0");
+		if(size == 0) throw std::length_error("size is 0");
 
 		Record *ptr = head;
 		while(ptr->next != nullptr) ptr = ptr->next;
@@ -130,7 +130,7 @@ public:
 	}
 	
 	T get(int index) const {
-		if(index < 0 || index >= size) throw new std::out_of_range(INDEX_OUT_OF_RANGE_MESSAGE);
+		if(index < 0 || index >= size) throw std::out_of_range(INDEX_OUT_OF_RANGE_MESSAGE);
 
 
 		Record *ptr;
@@ -143,7 +143,7 @@ public:
 	}
 
 	void set(const T &item, int index){
-		if(index < 0 || index >= size) throw new std::out_of_range(INDEX_OUT_OF_RANGE_MESSAGE);
+		if(index < 0 || index >= size) throw std::out_of_range(INDEX_OUT_OF_RANGE_MESSAGE);
 
 
 		Record *ptr;
@@ -156,9 +156,9 @@ public:
 	}
 
 	LinkedList<T>* getSublist(int start, int end) const {
-		if(start < 0 || start >= size) throw new std::out_of_range(INDEX_OUT_OF_RANGE_MESSAGE);
-		if(end < 0 || end > size) throw new std::out_of_range(INDEX_OUT_OF_RANGE_MESSAGE);
-		if(start > end) throw new std::logic_error("end must be not less than start");
+		if(start < 0 || start >= size) throw std::out_of_range(INDEX_OUT_OF_RANGE_MESSAGE);
+		if(end < 0 || end > size) throw std::out_of_range(INDEX_OUT_OF_RANGE_MESSAGE);
+		if(start > end) throw std::logic_error("end must be not less than start");
 
 		LinkedList<T> *newList = new LinkedList<T>();
 
@@ -200,7 +200,7 @@ public:
 	}
 
 	void insertAt(const T &item, int index){
-		if(index < 0 || index > size) throw new std::out_of_range(INDEX_OUT_OF_RANGE_MESSAGE);
+		if(index < 0 || index > size) throw std::out_of_range(INDEX_OUT_OF_RANGE_MESSAGE);
 
 
 		Record preHead = {(T)0, head};
