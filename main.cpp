@@ -27,6 +27,12 @@ public:
 		std::memcpy(this->data, data, size * sizeof(T));
 	}
 
+	DynamicArray(const DynamicArray<T> &array, int size){
+		if(size > array.size) throw std::out_of_range(INDEX_OUT_OF_RANGE_MESSAGE);
+
+		*this = DynamicArray(array.data, size);
+	}
+
 	DynamicArray(const DynamicArray<T> &array) : 
 		DynamicArray(array.data, array.size) {}
 
@@ -287,6 +293,7 @@ public:
 
 	virtual Sequence<T>* getSubsequence(int start, int end) const = 0;
 
+	virtual void set(const T &item, int index) = 0;
 	virtual void append(const T &item) = 0;
 	virtual void prepend(const T &item) = 0;
 	virtual void insertAt(const T &item, int index) = 0;
@@ -296,22 +303,28 @@ public:
 };
 
 
-template <typename T> class ArraySeqeunce : public Sequence<T>{
+template <typename T> class ArraySequence : public Sequence<T>{
 protected:
 	DynamicArray<T> *array;
 
 public:
-	ArraySeqeunce() : Sequence<T>() {
+	ArraySequence() : Sequence<T>() {
 		array = new DynamicArray<T>();
 		this->size = 0;
 	}
 
-	ArraySeqeunce(T *items, int size) : Sequence<T>() {
+	ArraySequence(int size) : Sequence<T>() {
+		array = new DynamicArray<T>(size);
+		this->size = size;
+	}
+
+
+	ArraySequence(T *items, int size) : Sequence<T>() {
 		array = new DynamicArray<T>(items, size);
 		this->size = size;
 	}
 
-	virtual ~ArraySeqeunce(){
+	virtual ~ArraySequence(){
 		delete array;
 	}
 
@@ -327,8 +340,27 @@ public:
 		return array->get(index);
 	}
 
+	virtual void set(const T &item, int index) override {
+		if(index < 0 || index >= this->size) throw std::out_of_range(INDEX_OUT_OF_RANGE_MESSAGE);
 
-	virtual Sequence<T>* getSubsequence(int start, int end) const = 0;
+		array->set(item, index);
+	}
+
+
+	virtual ArraySequence<T>* getSubsequence(int start, int end) const override {
+		if(start < 0 || start >= this->size) throw std::out_of_range(INDEX_OUT_OF_RANGE_MESSAGE);
+		if(end < 0 || end > this->size) throw std::out_of_range(INDEX_OUT_OF_RANGE_MESSAGE);
+		if(start > end) throw std::logic_error("end must be not less than start");
+
+
+		T subArray[end - start];
+		for(int i = 0; i < end - start; i++)
+			subArray[i] = array->get(i + start);
+		
+		ArraySequence<T> *subSequence = new ArraySequence<T>(subArray, end - start);
+
+		return subSequence;
+	}
 
 	virtual void append(const T &item) override {
 		array->resize(this->size + 1);
@@ -350,9 +382,32 @@ public:
 		this->size++;
 	}
 
-	virtual void insertAt(const T &item, int index) = 0;
+	virtual void insertAt(const T &item, int index) override {
+		if(index < 0 || index > this->size) throw std::out_of_range(INDEX_OUT_OF_RANGE_MESSAGE);
 
-	virtual Sequence<T>* concat(const Sequence<T>& seq) const = 0;
+		array->resize(this->size + 1);
+		T t1 = array->get(index);
+		T t2;
+		for(int i = index; i < this->size; i++){
+			t2 = t1;
+			t1 = array->get(i + 1);
+			array->set(t2, i + 1);
+		}
+		array->set(item, index);
+
+		this->size++;
+	}
+
+	virtual ArraySequence<T>* concat(const Sequence<T>& seq) const override {
+		ArraySequence<T> *newSequence = new ArraySequence<T>(this->size + seq.size);
+		for(int i = 0; i < this->size; i++)
+			newSequence->set(get(i), i);
+
+		for(int i = 0; i < seq.size; i++)
+			newSequence->set(seq.get(i), i + this->size);
+
+		return newSequence;
+	}
 
 };
 
