@@ -200,11 +200,32 @@ public:
 		size++;		
 	}
 
+	void removeAt(int index){
+		if(index < 0 || index >= size) throw std::out_of_range(INDEX_OUT_OF_RANGE_MESSAGE);
+
+
+		Record preHead = {.next = head};
+		Record *ptr;
+
+		{
+		int i = 0;
+		for(i = 0, ptr = &preHead; i < index; i++, ptr = ptr->next);
+		}
+
+		Record *tmp = ptr->next;
+		ptr->next = ptr->next->next;
+		delete tmp;
+
+		head = preHead.next;
+
+		size--;
+	}
+
 	void insertAt(const T &item, int index){
 		if(index < 0 || index > size) throw std::out_of_range(INDEX_OUT_OF_RANGE_MESSAGE);
 
 
-		Record preHead = {(T)0, head};
+		Record preHead = {.next = head};
 		Record *ptr;
 
 		{
