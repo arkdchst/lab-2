@@ -30,7 +30,7 @@ public:
 	DynamicArray(const DynamicArray<T> &array) : 
 		DynamicArray(array.data, array.size) {}
 
-	~DynamicArray(){
+	virtual ~DynamicArray(){
 		delete[] data;
 		size = 0;
 	}
@@ -105,7 +105,7 @@ public:
 		size = list.size;
 	}
 
-	~LinkedList(){
+	virtual ~LinkedList(){
 		Record *ptr = head;
 		Record *next;
 		while(ptr != nullptr){
@@ -311,7 +311,7 @@ public:
 		this->size = size;
 	}
 
-	~ArraySeqeunce(){
+	virtual ~ArraySeqeunce(){
 		delete array;
 	}
 
