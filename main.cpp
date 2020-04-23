@@ -6,6 +6,7 @@
 
 #define INDEX_OUT_OF_RANGE_MESSAGE "index out of range"
 #define NEGATIVE_SIZE_MESSAGE "size is negative"
+#define ZERO_SIZE_MESSAGE "size is 0"
 
 
 template <typename T> class DynamicArray{
@@ -116,13 +117,13 @@ public:
 
 
 	T getFirst() const {
-		if(size == 0) throw std::length_error("size is 0");
+		if(size == 0) throw std::length_error(ZERO_SIZE_MESSAGE);
 
 		return head->item;
 	}
 
 	T getLast() const {
-		if(size == 0) throw std::length_error("size is 0");
+		if(size == 0) throw std::length_error(ZERO_SIZE_MESSAGE);
 
 		Record *ptr = head;
 		while(ptr->next != nullptr) ptr = ptr->next;
