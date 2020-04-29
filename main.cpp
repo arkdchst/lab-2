@@ -37,32 +37,32 @@ public:
 		DynamicArray(array.data, array.size) {}
 
 	virtual ~DynamicArray(){
-		delete[] data;
-		size = 0;
+		delete[] this->data;
+		this->size = 0;
 	}
 
 
 	T get(int index) const {
-		if(index < 0 || index >= size) throw std::out_of_range(INDEX_OUT_OF_RANGE_MESSAGE);
+		if(index < 0 || index >= this->size) throw std::out_of_range(INDEX_OUT_OF_RANGE_MESSAGE);
 
-		return data[index];
+		return this->data[index];
 	}
 
-	int getSize() const { return size; }
+	int getSize() const { return this->size; }
 
 	void set(const T &value, int index){
-		if(index < 0 || index >= size) throw std::out_of_range(INDEX_OUT_OF_RANGE_MESSAGE);
+		if(index < 0 || index >= this->size) throw std::out_of_range(INDEX_OUT_OF_RANGE_MESSAGE);
 
-		data[index] = value;
+		this->data[index] = value;
 	}	
 
 	void resize(int size){
 		if(size < 0) throw std::length_error(NEGATIVE_SIZE_MESSAGE);
 
 		T *newData = new T[size];
-		std::memcpy(newData, data, (this->size > size ? size : this->size) * sizeof(T));
+		std::memcpy(newData, this->data, (this->size > size ? size : this->size) * sizeof(T));
 		delete[] data;
-		data = newData;
+		this->data = newData;
 
 		this->size = size;
 	}
@@ -86,7 +86,7 @@ public:
 	LinkedList(T *items, int size) : LinkedList() {
 		if(size < 0) throw std::length_error(NEGATIVE_SIZE_MESSAGE);
 
-		Record **ptr = &head;
+		Record **ptr = &(this->head);
 		for(int i = 0; i < size; i++){
 			*ptr = new Record;
 			(*ptr)->item = items[i];
@@ -99,7 +99,7 @@ public:
 
 	LinkedList(const LinkedList<T> &list){
 		Record *ptr = list.head;
-		Record **newPtr = &head;
+		Record **newPtr = &(this->head);
 
 		for(int i = 0; i < list.size; i++, ptr = ptr->next){
 			*newPtr = new Record;
@@ -108,11 +108,11 @@ public:
 
 		}
 
-		size = list.size;
+		this->size = list.size;
 	}
 
 	virtual ~LinkedList(){
-		Record *ptr = head;
+		Record *ptr = this->head;
 		Record *next;
 		while(ptr != nullptr){
 			next = ptr->next;
@@ -123,54 +123,54 @@ public:
 
 
 	T getFirst() const {
-		if(size == 0) throw std::length_error(ZERO_SIZE_MESSAGE);
+		if(this->size == 0) throw std::length_error(ZERO_SIZE_MESSAGE);
 
-		return head->item;
+		return this->head->item;
 	}
 
 	T getLast() const {
-		if(size == 0) throw std::length_error(ZERO_SIZE_MESSAGE);
+		if(this->size == 0) throw std::length_error(ZERO_SIZE_MESSAGE);
 
-		Record *ptr = head;
+		Record *ptr = this->head;
 		while(ptr->next != nullptr) ptr = ptr->next;
 		return ptr->item;
 	}
 	
 	T get(int index) const {
-		if(index < 0 || index >= size) throw std::out_of_range(INDEX_OUT_OF_RANGE_MESSAGE);
+		if(index < 0 || index >= this->size) throw std::out_of_range(INDEX_OUT_OF_RANGE_MESSAGE);
 
 
 		Record *ptr;
 		{
 		int i = 0;
-		for(i = 0, ptr = head; i < index; i++, ptr = ptr->next);
+		for(i = 0, ptr = this->head; i < index; i++, ptr = ptr->next);
 		}
 
 		return ptr->item;
 	}
 
 	void set(const T &item, int index){
-		if(index < 0 || index >= size) throw std::out_of_range(INDEX_OUT_OF_RANGE_MESSAGE);
+		if(index < 0 || index >= this->size) throw std::out_of_range(INDEX_OUT_OF_RANGE_MESSAGE);
 
 
 		Record *ptr;
 		{
 		int i = 0;
-		for(i = 0, ptr = head; i < index; i++, ptr = ptr->next);
+		for(i = 0, ptr = this->head; i < index; i++, ptr = ptr->next);
 		}
 
 		ptr->item = item;
 	}
 
 	LinkedList<T>* getSublist(int start, int end) const {
-		if(start < 0 || start >= size) throw std::out_of_range(INDEX_OUT_OF_RANGE_MESSAGE);
-		if(end < 0 || end > size) throw std::out_of_range(INDEX_OUT_OF_RANGE_MESSAGE);
+		if(start < 0 || start >= this->size) throw std::out_of_range(INDEX_OUT_OF_RANGE_MESSAGE);
+		if(end < 0 || end > this->size) throw std::out_of_range(INDEX_OUT_OF_RANGE_MESSAGE);
 		if(start > end) throw std::logic_error("end must be not less than start");
 
 		LinkedList<T> *newList = new LinkedList<T>();
 
 
-		Record *ptr = head;
+		Record *ptr = this->head;
 		Record **newPtr = &newList->head;
 
 		for(int i = 0; i < end; i++, ptr = ptr->next){
@@ -187,30 +187,30 @@ public:
 		return newList;
 	}
 
-	int getSize() const { return size; }
+	int getSize() const { return this->size; }
 	
 	void append(const T &item){
-		Record **ptr = &head;
+		Record **ptr = &(this->head);
 		while(*ptr != nullptr) ptr = &((*ptr)->next);
 
 		(*ptr) = new Record;
 		(*ptr)->item = item;
 
-		size++;
+		this->size++;
 	}
 	
 	void prepend(const T &item){
-		Record *ptr = new Record{item, head};
-		head = ptr;
+		Record *ptr = new Record{item, this->head};
+		this->head = ptr;
 
-		size++;		
+		this->size++;		
 	}
 
 	void removeAt(int index){
-		if(index < 0 || index >= size) throw std::out_of_range(INDEX_OUT_OF_RANGE_MESSAGE);
+		if(index < 0 || index >= this->size) throw std::out_of_range(INDEX_OUT_OF_RANGE_MESSAGE);
 
 
-		Record preHead = {.next = head};
+		Record preHead = {.next = this->head};
 		Record *ptr;
 
 		{
@@ -222,16 +222,16 @@ public:
 		ptr->next = ptr->next->next;
 		delete tmp;
 
-		head = preHead.next;
+		this->head = preHead.next;
 
-		size--;
+		this->size--;
 	}
 
 	void insertAt(const T &item, int index){
-		if(index < 0 || index > size) throw std::out_of_range(INDEX_OUT_OF_RANGE_MESSAGE);
+		if(index < 0 || index > this->size) throw std::out_of_range(INDEX_OUT_OF_RANGE_MESSAGE);
 
 
-		Record preHead = {.next = head};
+		Record preHead = {.next = this->head};
 		Record *ptr;
 
 		{
@@ -240,13 +240,13 @@ public:
 		}
 
 		ptr->next = new Record{item, ptr->next};
-		head = preHead.next;
+		this->head = preHead.next;
 
-		size++;
+		this->size++;
 	}
 
 	LinkedList<T>* concat(const LinkedList<T> &list) const {
-		Record *ptr1 = head;
+		Record *ptr1 = this->head;
 		Record *ptr2 = list.head;
 
 		LinkedList<T> *newList = new LinkedList<T>();
@@ -270,7 +270,7 @@ public:
 			ptr = &((*ptr)->next);
 		}
 
-		newList->size = size + list.size;
+		newList->size = this->size + list.size;
 		return newList;
 	}
 
@@ -309,41 +309,41 @@ protected:
 
 public:
 	ArraySequence() : Sequence<T>() {
-		array = new DynamicArray<T>();
+		this->array = new DynamicArray<T>();
 		this->size = 0;
 	}
 
 	ArraySequence(int size) : Sequence<T>() {
-		array = new DynamicArray<T>(size);
+		this->array = new DynamicArray<T>(size);
 		this->size = size;
 	}
 
 
 	ArraySequence(T *items, int size) : Sequence<T>() {
-		array = new DynamicArray<T>(items, size);
+		this->array = new DynamicArray<T>(items, size);
 		this->size = size;
 	}
 
 	virtual ~ArraySequence(){
-		delete array;
+		delete this->array;
 	}
 
 	virtual T getFirst() const override {
-		return array->get(0);
+		return this->array->get(0);
 	}
 
 	virtual T getLast() const override {
-		return array->get(this->size - 1);
+		return this->array->get(this->size - 1);
 	}
 
 	virtual T get(int index) const override {
-		return array->get(index);
+		return this->array->get(index);
 	}
 
 	virtual void set(const T &item, int index) override {
 		if(index < 0 || index >= this->size) throw std::out_of_range(INDEX_OUT_OF_RANGE_MESSAGE);
 
-		array->set(item, index);
+		this->array->set(item, index);
 	}
 
 
@@ -355,7 +355,7 @@ public:
 
 		T subArray[end - start];
 		for(int i = 0; i < end - start; i++)
-			subArray[i] = array->get(i + start);
+			subArray[i] = this->array->get(i + start);
 		
 		ArraySequence<T> *subSequence = new ArraySequence<T>(subArray, end - start);
 
@@ -363,21 +363,21 @@ public:
 	}
 
 	virtual void append(const T &item) override {
-		array->resize(this->size + 1);
-		array->set(item, this->size);
+		this->array->resize(this->size + 1);
+		this->array->set(item, this->size);
 		this->size++;
 	}
 
 	virtual void prepend(const T &item) override {
-		array->resize(this->size + 1);
-		T t1 = array->get(0);
+		this->array->resize(this->size + 1);
+		T t1 = this->array->get(0);
 		T t2;
 		for(int i = 0; i < this->size; i++){
 			t2 = t1;
-			t1 = array->get(i + 1);
-			array->set(t2, i + 1);
+			t1 = this->array->get(i + 1);
+			this->array->set(t2, i + 1);
 		}
-		array->set(item, 0);
+		this->array->set(item, 0);
 
 		this->size++;
 	}
@@ -385,15 +385,15 @@ public:
 	virtual void insertAt(const T &item, int index) override {
 		if(index < 0 || index > this->size) throw std::out_of_range(INDEX_OUT_OF_RANGE_MESSAGE);
 
-		array->resize(this->size + 1);
-		T t1 = array->get(index);
+		this->array->resize(this->size + 1);
+		T t1 = this->array->get(index);
 		T t2;
 		for(int i = index; i < this->size; i++){
 			t2 = t1;
-			t1 = array->get(i + 1);
-			array->set(t2, i + 1);
+			t1 = this->array->get(i + 1);
+			this->array->set(t2, i + 1);
 		}
-		array->set(item, index);
+		this->array->set(item, index);
 
 		this->size++;
 	}
