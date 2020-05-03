@@ -280,7 +280,7 @@ public:
 
 
 template <typename T> class Sequence{
-public:
+protected:
 	int size = 0;
 	Sequence(){}
 public:
@@ -419,6 +419,7 @@ public:
 
 
 template <typename T> class ListSequence : public Sequence<T>{
+protected:
 	LinkedList<T> *list;
 public:
 	ListSequence(){
