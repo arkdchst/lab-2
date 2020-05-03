@@ -300,6 +300,16 @@ public:
 
 	virtual Sequence<T>* concat(const Sequence<T>& seq) const = 0;
 
+	virtual bool operator==(const Sequence<T> &seq){
+		if(this->size != seq.size) return false;
+
+		for(int i = 0; i < this->size; i++){
+			if(this->get(i) != seq.get(i)) return false;
+		}
+
+		return true;
+	}
+
 };
 
 
@@ -404,12 +414,12 @@ public:
 	}
 
 	virtual ArraySequence<T>* concat(const Sequence<T>& seq) const override {
-		DynamicArray<T> *array = new DynamicArray<T>(this->size + seq.size);
+		DynamicArray<T> *array = new DynamicArray<T>(this->size + seq.getSize());
 		ArraySequence<T> *newSequence = new ArraySequence<T>(array);
 		for(int i = 0; i < this->size; i++)
 			newSequence->set(this->get(i), i);
 
-		for(int i = 0; i < seq.size; i++)
+		for(int i = 0; i < seq.getSize(); i++)
 			newSequence->set(seq.get(i), i + this->size);
 
 		return newSequence;
@@ -491,7 +501,7 @@ public:
 		for(int i = 0; i < this->size; i++)
 			newSequence->append(this->get(i));
 
-		for(int i = 0; i < seq.size; i++)
+		for(int i = 0; i < seq.getSize(); i++)
 			newSequence->append(seq.get(i));
 
 		return newSequence;
