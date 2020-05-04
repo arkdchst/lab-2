@@ -282,7 +282,6 @@ public:
 template <typename T> class Sequence{
 protected:
 	int size = 0;
-	Sequence(){}
 public:
 
 	virtual T getFirst() const = 0;
