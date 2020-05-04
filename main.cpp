@@ -1,6 +1,7 @@
 #include <iostream>
 #include <algorithm>
 #include <cstring>
+#include <cassert>
 
 #include <stdexcept>
 
@@ -24,13 +25,15 @@ public:
 
 
 	DynamicArray(T *data, int size) : DynamicArray(size) {
-		std::memcpy(this->data, data, size * sizeof(T));
+		for(int i = 0; i < size; i++)
+			this->data[i] = data[i];
 	}
 
-	DynamicArray(const DynamicArray<T> &array, int size){
+	DynamicArray(const DynamicArray<T> &array, int size) : DynamicArray(size){
 		if(size > array.size) throw std::out_of_range(INDEX_OUT_OF_RANGE_MESSAGE);
 
-		*this = DynamicArray(array.data, size);
+		for(int i = 0; i < size; i++)
+			this->data[i] = array.data[i];
 	}
 
 	DynamicArray(const DynamicArray<T> &array) : 
@@ -54,17 +57,42 @@ public:
 		if(index < 0 || index >= this->size) throw std::out_of_range(INDEX_OUT_OF_RANGE_MESSAGE);
 
 		this->data[index] = value;
-	}	
+	}
 
 	void resize(int size){
 		if(size < 0) throw std::length_error(NEGATIVE_SIZE_MESSAGE);
 
 		T *newData = new T[size];
-		std::memcpy(newData, this->data, (this->size > size ? size : this->size) * sizeof(T));
+		for(int i = 0; i < (this->size > size ? size : this->size); i++)
+			newData[i] = data[i];
+
 		delete[] data;
 		this->data = newData;
 
 		this->size = size;
+	}
+
+
+	bool operator==(const DynamicArray<T> &arr) const {
+		if(this->size != arr.size) return false;
+
+		for(int i = 0; i < this->size; i++)
+			if(this->get(i) != arr.get(i)) return false;
+		
+
+		return true;
+	}
+
+	DynamicArray<T>& operator=(const DynamicArray &array){
+		delete this->data;
+
+		this->size = array.size;
+		this->data = new T[this->size];
+
+		for(int i = 0; i < size; i++)
+			this->data[i] = array.data[i];
+
+		return *this;
 	}
 
 };
@@ -80,7 +108,9 @@ private:
 
 	Record *head = nullptr;
 	int size = 0;
+
 public:
+
 	LinkedList() : size(0) {}
 
 	LinkedList(T *items, int size) : LinkedList() {
@@ -119,6 +149,7 @@ public:
 			delete ptr;
 			ptr = next;
 		}
+		this->size = 0;
 	}
 
 
@@ -162,7 +193,7 @@ public:
 		ptr->item = item;
 	}
 
-	LinkedList<T>* getSublist(int start, int end) const {
+	LinkedList<T>* getSublist(int start, int end) const { //end excluding
 		if(start < 0 || start >= this->size) throw std::out_of_range(INDEX_OUT_OF_RANGE_MESSAGE);
 		if(end < 0 || end > this->size) throw std::out_of_range(INDEX_OUT_OF_RANGE_MESSAGE);
 		if(start > end) throw std::logic_error("end must be not less than start");
@@ -275,6 +306,16 @@ public:
 	}
 
 
+	bool operator==(const LinkedList<T> &list) const {
+		if(this->size != list.size) return false;
+
+		for(int i = 0; i < this->size; i++){
+			if(this->get(i) != list.get(i)) return false;
+		}
+
+		return true;
+	}
+
 };
 
 
@@ -290,7 +331,7 @@ public:
 	virtual int getSize() const { return this->size; }
 
 
-	virtual Sequence<T>* getSubsequence(int start, int end) const = 0;
+	virtual Sequence<T>* getSubsequence(int start, int end) const = 0; //end excluding
 
 	virtual void set(const T &item, int index) = 0;
 	virtual void append(const T &item) = 0;
@@ -323,7 +364,7 @@ public:
 	}
 
 	ArraySequence(const ArraySequence<T> &seq){
-		this->array = new DynamicArray<T>(seq.array);
+		this->array = new DynamicArray<T>(*seq.array);
 		this->size = seq.size;
 	}
 
@@ -340,6 +381,7 @@ public:
 
 	virtual ~ArraySequence(){
 		delete this->array;
+		this->size = 0;
 	}
 
 	virtual T getFirst() const override {
@@ -437,7 +479,7 @@ public:
 	}
 
 	ListSequence(const ListSequence<T> &seq){
-		this->list = new LinkedList<T>(seq.list);
+		this->list = new LinkedList<T>(*seq.list);
 		this->size = seq.size;
 	}
 
@@ -453,6 +495,7 @@ public:
 
 	virtual ~ListSequence(){
 		delete this->list;
+		this->size = 0;
 	}
 
 
@@ -469,7 +512,7 @@ public:
 	}
 
 
-	virtual Sequence<T>* getSubsequence(int start, int end) const override {
+	virtual ListSequence<T>* getSubsequence(int start, int end) const override {
 		LinkedList<T> *subList = this->list->getSublist(start, end);
 		ListSequence<T> *seq = new ListSequence<T>(subList);
 		return seq;
@@ -494,7 +537,7 @@ public:
 		this->size++;
 	}
 
-	virtual Sequence<T>* concat(const Sequence<T>& seq) const override {
+	virtual ListSequence<T>* concat(const Sequence<T>& seq) const override {
 		ListSequence<T> *newSequence = new ListSequence<T>();
 
 		for(int i = 0; i < this->size; i++)
