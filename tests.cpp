@@ -75,6 +75,13 @@ void testLinkedList(){
 		assert(*list5 == list1);
 		assert(*list6 == LinkedList<int>(initArr5,7));
 		assert(*list7 == LinkedList<int>(initArr6,10));
+
+	delete list2;
+	delete list3;
+	delete list4;
+	delete list5;
+	delete list6;
+	delete list7;
 }
 
 
@@ -123,6 +130,13 @@ void testArraySequence(){
 		assert(*seq5 == seq1);
 		assert(*seq6 == ArraySequence<int>(initArr5,10));
 		assert(*seq7 == ArraySequence<int>(initArr6,13));
+
+	delete seq2;
+	delete seq3;
+	delete seq4;
+	delete seq5;
+	delete seq6;
+	delete seq7;
 }
 
 
@@ -171,6 +185,14 @@ void testListSequence(){
 		assert(*seq5 == seq1);
 		assert(*seq6 == ListSequence<int>(initArr5,10));
 		assert(*seq7 == ListSequence<int>(initArr6,13));
+
+	delete seq2;
+	delete seq3;
+	delete seq4;
+	delete seq5;
+	delete seq6;
+	delete seq7;
+
 }
 
 
@@ -207,6 +229,9 @@ void testDiagonalMatrix(){
 	assert(mat4->get(2, 2) == 26);
 
 	assert(std::abs(mat4->getNorm() - 54) < 0.7);
+
+	delete mat3;
+	delete mat4;
 }
 
 
