@@ -604,6 +604,17 @@ public:
 
 		return true;
 	}
+
+	float getNorm() const {
+		float sum = 0;
+		for(int i = 0; i < this->width; i++)
+			for(int j = 0; j < this->height; j++){
+				T elem = this->get(i, j);
+				sum += elem * elem;
+			}
+
+		return sqrt(sum);
+	}
 };
 
 
@@ -699,16 +710,5 @@ public:
 		return newMatrix;
 	}
 
-
-	float getNorm() const {
-		float sum = 0;
-		for(int i = 0; i < this->width; i++)
-			for(int j = 0; j < this->height; j++){
-				T elem = this->get(i, j);
-				sum += elem * elem;
-			}
-
-		return sqrt(sum);
-	}
 
 };
