@@ -174,12 +174,49 @@ void testListSequence(){
 }
 
 
+void testDiagonalMatrix(){
+	DiagonalMatrix<int> mat1(5, 3, 5);
+	mat1.set(1, 0, 0);
+	mat1.set(2, 1, 0);
+	mat1.set(3, 2, 0);
+	mat1.set(4, 0, 1);
+	mat1.set(5, 1, 1);
+	mat1.set(6, 2, 1);
+	mat1.set(7, 3, 1);
+	mat1.set(8, 0, 2);
+	mat1.set(9, 1, 2);
+	mat1.set(10, 2, 2);
+	mat1.set(11, 3, 2);
+	mat1.set(12, 4, 2);
+
+	DiagonalMatrix<int> mat2(5, 3, 1);
+	mat2.set(1, 0, 0);
+	mat2.set(2, 1, 1);
+	mat2.set(3, 2, 2);
+
+	DiagonalMatrix<int> *mat3 = mat1 + mat2;
+	DiagonalMatrix<int> *mat4 = *mat3 * 2;
+
+	assert(mat4->getWidth() == 5);
+	assert(mat4->getHeight() == 3);
+	assert(mat4->getDiag() == 5);
+	assert(mat4->get(0, 0) == 4);
+	assert(mat4->get(1, 2) == 18);
+	assert(mat4->get(0, 2) == 16);
+	assert(mat4->get(4, 0) == 0);
+	assert(mat4->get(2, 2) == 26);
+
+	assert(std::abs(mat4->getNorm() - 54) < 0.7);
+}
+
+
 
 int main(int argc, const char *argv[]){
 	testDynamicArray();
 	testLinkedList();
 	testArraySequence();
 	testListSequence();
+	testDiagonalMatrix();
 
 	return 0;
 }

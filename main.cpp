@@ -609,7 +609,7 @@ public:
 
 template <typename T>
 class DiagonalMatrix : public Matrix<T>{
-public:
+private:
 	Sequence<Sequence<T>*> *data;
 	int diag = 0; //diagonality
 
@@ -672,6 +672,10 @@ public:
 		}
 
 		data->get(getDiagNumber(x,y))->set(item, (x < y) ? x : y );
+	}
+
+	int getDiag(){
+		return this->diag;
 	}
 
 	DiagonalMatrix<T>* operator+(const DiagonalMatrix<T> &matrix) const {
