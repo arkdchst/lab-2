@@ -678,14 +678,14 @@ public:
 		int num = this->getDiagNumber(x, y);
 		if(num < 0 || num >= this->diag){
 			if(item != 0)
-				throw std::out_of_range("trying to set non-diagonal element");
+				throw std::domain_error("trying to set non-diagonal element");
 			return;
 		}
 
 		data->get(getDiagNumber(x,y))->set(item, (x < y) ? x : y );
 	}
 
-	int getDiag(){
+	int getDiag() const {
 		return this->diag;
 	}
 
