@@ -13,21 +13,21 @@ DiagonalMatrix<float>* inputMatrix(){
 		std::cout << "width: ";
 		std::cin >> width;
 		if(width > 0) break;
-		std::cout << "width must be positive";
+		std::cout << "width must be positive\n";
 	}
 
 	while(true){
 		std::cout << "height: ";
 		std::cin >> height;
 		if(height > 0) break;
-		std::cout << "height must be positive";
+		std::cout << "height must be positive\n";
 	}
 
 	while(true){
 		std::cout << "diagonality: ";
 		std::cin >> diag;
 		if(diag > 0 && diag % 2 == 1) break;
-		std::cout << "diagonality must be positive and odd";
+		std::cout << "diagonality must be positive and odd\n";
 	}
 
 	matrix = new DiagonalMatrix<float>(width, height, diag);
@@ -69,12 +69,12 @@ void printSum(DiagonalMatrix<float> *A, DiagonalMatrix<float> *B){
 	delete D;
 }
 
-void printMul(DiagonalMatrix<float> *A, float C){
+void printMul(DiagonalMatrix<float> *A, float c){
 	if(A == nullptr){
 		std::cout << "A isn't set\n";
 		return;
 	}
-	DiagonalMatrix<float> *D = *A * C;
+	DiagonalMatrix<float> *D = *A * c;
 	printMatrix(D);
 	delete D;
 }
@@ -95,7 +95,7 @@ void printMenu(){
 void interface(){
 	DiagonalMatrix<float> *A = nullptr;
 	DiagonalMatrix<float> *B = nullptr;
-	float C = 0;
+	float c = 0;
 
 	while(true){
 		printMenu();
@@ -113,14 +113,14 @@ void interface(){
 				B = inputMatrix();
 				break;
 			case 3:
-				std::cout << "C: ";
-				std::cin >> C;
+				std::cout << "c: ";
+				std::cin >> c;
 				break;
 			case 4:
 				printSum(A, B);
 				break;
 			case 5:
-				printMul(A, C);
+				printMul(A, c);
 				break;
 			case 6:
 				printNorm(A);
