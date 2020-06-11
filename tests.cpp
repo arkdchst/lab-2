@@ -1,5 +1,7 @@
 
-#include "main.cpp"
+#include "base.h"
+#include "sequence.h"
+#include "matrix.h"
 #include <cassert>
 
 

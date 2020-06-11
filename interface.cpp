@@ -1,5 +1,9 @@
 
-#include "main.cpp"
+#include <iostream>
+
+#include "base.h"
+#include "sequence.h"
+#include "matrix.h"
 
 
 DiagonalMatrix<float>* inputMatrix(){
