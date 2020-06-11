@@ -2,43 +2,43 @@
 
 
 template <typename T>
-class Complex {
+class complex {
 private:
-	T real_part;
-	T imag_part;
+	T realPart;
+	T imagPart;
 
 public:
-	Complex(T real_part = T(), T imag_part = T())
-		: real_part(real_part), imag_part(imag_part){}
+	complex(T realPart = T(), T imagPart = T())
+		: realPart(realPart), imagPart(imagPart){}
 
 	T real() const {
-		return this->real_part;
+		return this->realPart;
 	}
 
 	T imag() const {
-		return this->imag_part;
+		return this->imagPart;
 	}
 
-	Complex operator+(int val) const {
-		return Complex(this->real_part + val, this->imag_part);
+	complex operator+(int val) const {
+		return complex(this->realPart + val, this->imagPart);
 	}
 
-	Complex operator+(const Complex<T> &val) const {
-		return Complex(this->real_part + val.real_part, this->imag_part + val.imag_part);
-	}
-
-	template <typename U>
-	Complex operator*(U val) const {
-		return Complex(this->real_part * val, this->imag_part * val);
+	complex operator+(const complex<T> &val) const {
+		return complex(this->realPart + val.realPart, this->imagPart + val.imagPart);
 	}
 
 	template <typename U>
-	bool operator==(const Complex<U> &val) const {
-		return this->real_part == val.real() && this->imag_part == val.imag();
+	complex operator*(U val) const {
+		return complex(this->realPart * val, this->imagPart * val);
 	}
 
 	template <typename U>
-	bool operator!=(const Complex<U> &val) const {
+	bool operator==(const complex<U> &val) const {
+		return this->realPart == val.real() && this->imagPart == val.imag();
+	}
+
+	template <typename U>
+	bool operator!=(const complex<U> &val) const {
 		return !this->operator==(val);
 	}
 
