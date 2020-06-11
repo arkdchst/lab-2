@@ -1,7 +1,13 @@
+.PHONY: all clean
 all: tests interface
 
+CMD := g++
+
 tests: tests.cpp main.cpp
-	g++ tests.cpp -o tests
+	$(CMD) tests.cpp -o tests
 	
 interface: interface.cpp main.cpp
-	g++ interface.cpp -o interface
+	$(CMD) interface.cpp -o interface
+
+clean:
+	rm tests interface
