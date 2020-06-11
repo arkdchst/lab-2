@@ -1,5 +1,6 @@
 
 #include "main.cpp"
+#include <cassert>
 
 
 void testDynamicArray(){

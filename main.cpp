@@ -1,14 +1,13 @@
 #include <iostream>
 #include <algorithm>
-#include <cstring>
-#include <cassert>
+#include <string>
 #include <cmath>
 
 #include <stdexcept>
 
-#define INDEX_OUT_OF_RANGE_MESSAGE "index out of range"
-#define NEGATIVE_SIZE_MESSAGE "size is negative"
-#define ZERO_SIZE_MESSAGE "size is 0"
+const char *INDEX_OUT_OF_RANGE_MESSAGE = "index out of range";
+const char *NEGATIVE_SIZE_MESSAGE = "size is negative";
+const char *ZERO_SIZE_MESSAGE = "size is 0";
 
 
 template <typename T> class DynamicArray{
@@ -85,7 +84,7 @@ public:
 	}
 
 	DynamicArray<T>& operator=(const DynamicArray &array){
-		delete this->data;
+		delete[] this->data;
 
 		this->size = array.size;
 		this->data = new T[this->size];
@@ -336,14 +335,12 @@ public:
 
 
 template <typename T> class Sequence{
-protected:
-	int size = 0;
 public:
 
 	virtual T getFirst() const = 0;
 	virtual T getLast() const = 0;
 	virtual T get(int index) const = 0;
-	virtual int getSize() const { return this->size; }
+	virtual int getSize() const = 0;
 
 
 	virtual Sequence<T>* getSubsequence(int start, int end) const = 0; //end excluding
@@ -355,10 +352,10 @@ public:
 
 	virtual Sequence<T>* concat(const Sequence<T>& seq) const = 0;
 
-	virtual bool operator==(const Sequence<T> &seq){
-		if(this->size != seq.size) return false;
+	virtual bool operator==(const Sequence<T> &seq) const {
+		if(this->getSize() != seq.getSize()) return false;
 
-		for(int i = 0; i < this->size; i++){
+		for(int i = 0; i < this->getSize(); i++){
 			if(this->get(i) != seq.get(i)) return false;
 		}
 
@@ -375,33 +372,27 @@ protected:
 public:
 	ArraySequence(){
 		this->array = new DynamicArray<T>();
-		this->size = 0;
 	}
 
 	ArraySequence(const ArraySequence<T> &seq){
 		this->array = new DynamicArray<T>(*seq.array);
-		this->size = seq.size;
 	}
 
 	ArraySequence(DynamicArray<T>* array){
 		this->array = array;
-		this->size = array->getSize();
 	}
 
 
 	ArraySequence(T *items, int size){
 		this->array = new DynamicArray<T>(items, size);
-		this->size = size;
 	}
 
 	ArraySequence(int size){
 		this->array = new DynamicArray<T>(size);
-		this->size = size;
 	}
 
 	virtual ~ArraySequence(){
 		delete this->array;
-		this->size = 0;
 	}
 
 	virtual T getFirst() const override {
@@ -409,23 +400,27 @@ public:
 	}
 
 	virtual T getLast() const override {
-		return this->array->get(this->size - 1);
+		return this->array->get(this->getSize() - 1);
 	}
 
 	virtual T get(int index) const override {
 		return this->array->get(index);
 	}
 
+	virtual int getSize() const override {
+		return this->array->getSize();
+	}
+
 	virtual void set(const T &item, int index) override {
-		if(index < 0 || index >= this->size) throw std::out_of_range(INDEX_OUT_OF_RANGE_MESSAGE);
+		if(index < 0 || index >= this->getSize()) throw std::out_of_range(INDEX_OUT_OF_RANGE_MESSAGE);
 
 		this->array->set(item, index);
 	}
 
 
 	virtual ArraySequence<T>* getSubsequence(int start, int end) const override {
-		if(start < 0 || start >= this->size) throw std::out_of_range(INDEX_OUT_OF_RANGE_MESSAGE);
-		if(end < 0 || end > this->size) throw std::out_of_range(INDEX_OUT_OF_RANGE_MESSAGE);
+		if(start < 0 || start >= this->getSize()) throw std::out_of_range(INDEX_OUT_OF_RANGE_MESSAGE);
+		if(end < 0 || end > this->getSize()) throw std::out_of_range(INDEX_OUT_OF_RANGE_MESSAGE);
 		if(start > end) throw std::logic_error("end must be not less than start");
 
 
@@ -439,49 +434,44 @@ public:
 	}
 
 	virtual void append(const T &item) override {
-		this->array->resize(this->size + 1);
-		this->array->set(item, this->size);
-		this->size++;
+		this->array->resize(this->getSize() + 1);
+		this->array->set(item, this->getSize());
 	}
 
 	virtual void prepend(const T &item) override {
-		this->array->resize(this->size + 1);
+		this->array->resize(this->getSize() + 1);
 		T t1 = this->array->get(0);
 		T t2;
-		for(int i = 0; i < this->size; i++){
+		for(int i = 0; i < this->getSize(); i++){
 			t2 = t1;
 			t1 = this->array->get(i + 1);
 			this->array->set(t2, i + 1);
 		}
 		this->array->set(item, 0);
-
-		this->size++;
 	}
 
 	virtual void insertAt(const T &item, int index) override {
-		if(index < 0 || index > this->size) throw std::out_of_range(INDEX_OUT_OF_RANGE_MESSAGE);
+		if(index < 0 || index > this->getSize()) throw std::out_of_range(INDEX_OUT_OF_RANGE_MESSAGE);
 
-		this->array->resize(this->size + 1);
+		this->array->resize(this->getSize() + 1);
 		T t1 = this->array->get(index);
 		T t2;
-		for(int i = index; i < this->size; i++){
+		for(int i = index; i < this->getSize(); i++){
 			t2 = t1;
 			t1 = this->array->get(i + 1);
 			this->array->set(t2, i + 1);
 		}
 		this->array->set(item, index);
-
-		this->size++;
 	}
 
 	virtual ArraySequence<T>* concat(const Sequence<T>& seq) const override {
-		DynamicArray<T> *array = new DynamicArray<T>(this->size + seq.getSize());
+		DynamicArray<T> *array = new DynamicArray<T>(this->getSize() + seq.getSize());
 		ArraySequence<T> *newSequence = new ArraySequence<T>(array);
-		for(int i = 0; i < this->size; i++)
+		for(int i = 0; i < this->getSize(); i++)
 			newSequence->set(this->get(i), i);
 
 		for(int i = 0; i < seq.getSize(); i++)
-			newSequence->set(seq.get(i), i + this->size);
+			newSequence->set(seq.get(i), i + this->getSize());
 
 		return newSequence;
 	}
@@ -495,32 +485,26 @@ protected:
 public:
 	ListSequence(){
 		this->list = new LinkedList<T>();
-		this->size = 0;
 	}
 
 	ListSequence(const ListSequence<T> &seq){
 		this->list = new LinkedList<T>(*seq.list);
-		this->size = seq.size;
 	}
 
 	ListSequence(LinkedList<T> *list){
 		this->list = list;
-		this->size = list->getSize();
 	}
 
 	ListSequence(T *items, int size){
 		this->list = new LinkedList<T>(items, size);
-		this->size = size;
 	}
 
 	ListSequence(int size){
 		this->list = new LinkedList<T>(size);
-		this->size = size;
 	}
 
 	virtual ~ListSequence(){
 		delete this->list;
-		this->size = 0;
 	}
 
 
@@ -536,6 +520,9 @@ public:
 		return this->list->get(index);
 	}
 
+	virtual int getSize() const override {
+		return this->list->getSize();
+	}
 
 	virtual ListSequence<T>* getSubsequence(int start, int end) const override {
 		LinkedList<T> *subList = this->list->getSublist(start, end);
@@ -549,23 +536,20 @@ public:
 
 	virtual void append(const T &item) override {
 		this->list->append(item);
-		this->size++;
 	}
 
 	virtual void prepend(const T &item) override {
 		this->list->prepend(item);
-		this->size++;
 	}
 
 	virtual void insertAt(const T &item, int index) override {
 		this->list->insertAt(item, index);
-		this->size++;
 	}
 
 	virtual ListSequence<T>* concat(const Sequence<T>& seq) const override {
 		ListSequence<T> *newSequence = new ListSequence<T>();
 
-		for(int i = 0; i < this->size; i++)
+		for(int i = 0; i < this->getSize(); i++)
 			newSequence->append(this->get(i));
 
 		for(int i = 0; i < seq.getSize(); i++)
