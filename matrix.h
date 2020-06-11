@@ -1,21 +1,16 @@
 #include <stdexcept>
 #include <cmath>
+#include "complex.h"
 
 template <typename T>
 class Matrix{
-protected:
-	int width = 0, height = 0;
 public:
 	virtual T get(int x, int y) const = 0;
 	virtual void set(T item, int x, int y) = 0;
 
-	int getWidth() const {
-		return this->width;
-	}
+	virtual int getWidth() const = 0;
 
-	int getHeight() const {
-		return this->height;
-	}
+	virtual int getHeight() const = 0;
 
 	bool operator==(const Matrix<T> &matrix) const {
 		if(this->width != matrix.width || this->height != matrix.height) return false;
@@ -28,16 +23,6 @@ public:
 		return true;
 	}
 
-	float getNorm() const {
-		float sum = 0;
-		for(int i = 0; i < this->width; i++)
-			for(int j = 0; j < this->height; j++){
-				T elem = this->get(i, j);
-				sum += elem * elem;
-			}
-
-		return sqrt(sum);
-	}
 };
 
 
@@ -46,6 +31,8 @@ class DiagonalMatrix : public Matrix<T>{
 private:
 	Sequence<Sequence<T>*> *data;
 	int diag = 0; //diagonality
+
+	int width = 0, height = 0;
 
 	int getDiagLength(int x, int y) const {
 		return getDiagLength(getDiagNumber(x,y));
@@ -73,12 +60,8 @@ private:
 
 public:
 
-	DiagonalMatrix(int width, int height, int diag){
+	DiagonalMatrix(int width, int height, int diag) : width(width), height(height), diag(diag) {
 		if(width < 0 || height < 0 || diag < 0) throw std::length_error(NEGATIVE_SIZE_MESSAGE);
-
-		this->width = width;
-		this->height = height;
-		this->diag = diag;
 
 		data = (Sequence<Sequence<T>*>*) new ListSequence<ListSequence<T>*>;
 		for(int i = 0; i < diag; i++){
@@ -90,7 +73,7 @@ public:
 		if(x < 0 || x >= this->width || y < 0 || y >= this->height) throw std::out_of_range(INDEX_OUT_OF_RANGE_MESSAGE);
 
 		int num = this->getDiagNumber(x, y);
-		if(num < 0 || num >= this->diag) return 0;
+		if(num < 0 || num >= this->diag) return T();
 
 		return data->get(getDiagNumber(x,y))->get( (x < y) ? x : y );
 	}
@@ -100,7 +83,7 @@ public:
 
 		int num = this->getDiagNumber(x, y);
 		if(num < 0 || num >= this->diag){
-			if(item != 0)
+			if(item != T())
 				throw std::domain_error("trying to set non-diagonal element");
 			return;
 		}
@@ -112,8 +95,9 @@ public:
 		return this->diag;
 	}
 
-	DiagonalMatrix<T>* operator+(const DiagonalMatrix<T> &matrix) const {
-		DiagonalMatrix<T> *newMatrix = new DiagonalMatrix<T>(this->width, this->height, (this->diag > matrix.diag ? this->diag : matrix.diag));
+	template <typename U>
+	DiagonalMatrix<T>* operator+(const DiagonalMatrix<U> &matrix) const {
+		DiagonalMatrix<T> *newMatrix = new DiagonalMatrix<T>(this->width, this->height, (this->diag > matrix.getDiag() ? this->diag : matrix.getDiag()));
 		for(int i = 0; i < this->width; i++)
 			for(int j = 0; j < this->height; j++){
 				newMatrix->set(this->get(i, j) + matrix.get(i, j), i, j);
@@ -131,6 +115,14 @@ public:
 			}
 
 		return newMatrix;
+	}
+
+	virtual int getWidth() const override {
+		return this->width;
+	}
+
+	virtual int getHeight() const override {
+		return this->height;
 	}
 
 
