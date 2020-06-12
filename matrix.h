@@ -23,7 +23,31 @@ public:
 		return true;
 	}
 
+	template <typename U>
+	U getNorm() const {
+		U sum = U();
+		for(int x = 0; x < this->getWidth(); x++)
+			for(int y = 0; y < this->getHeight(); y++)
+				sum += this->get(x, y) * this->get(x, y);
+			
+
+		return static_cast<U>(std::sqrt(sum));
+	}
+
 };
+
+
+template<>
+template<>
+float Matrix<complexf>::getNorm<float>() const {
+	complexf sum = 0;
+	for(int x = 0; x < this->getWidth(); x++)
+		for(int y = 0; y < this->getHeight(); y++){
+			sum += this->get(x, y) * this->get(x, y).conj();
+		}
+
+	return std::sqrt(sum.real());
+}
 
 
 template <typename T>

@@ -10,7 +10,6 @@
 #include "matrix.h"
 
 
-using complexf = complex<float>;
 
 enum Type {INT, COMPLEX};
 
@@ -131,6 +130,17 @@ struct TypedDiagonalMatrix{
 		return newMatrix;
 	}
 
+	float getNorm(){
+		if(this->type == INT){
+			return this->asInt()->getNorm<float>();
+		}
+		else if(this->type == COMPLEX){
+			return this->asComplex()->getNorm<float>();
+		}
+
+		return -1;
+	}
+
 };
 
 
@@ -240,7 +250,7 @@ TypedDiagonalMatrix* readMatrix(){
 
 
 void printMenu(){
-	print("1. set A\n2. set B\n3. set c\n4. get A+B\n5. get c*A\n6. exit");
+	print("1. set A\n2. set B\n3. set c\n4. get A+B\n5. get c*A\n6. get norm of A\n7. exit");
 }
 
 void menu(){
@@ -250,7 +260,7 @@ void menu(){
 
 	while(true){	
 		printMenu();
-		int choice = readInt(1,6);
+		int choice = readInt(1,7);
 
 		switch(choice){
 			case 1:
@@ -296,6 +306,17 @@ void menu(){
 				break;
 				}
 			case 6:
+				{
+				if(!A){
+					print("A isn't set");
+					break;
+				}
+
+				float norm = A->getNorm();
+				print(std::to_string(norm));
+				break;
+				}
+			case 7:
 				return;
 		}
 	}

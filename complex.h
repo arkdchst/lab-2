@@ -1,5 +1,3 @@
-#include <complex>
-
 
 template <typename T>
 class complex {
@@ -28,8 +26,19 @@ public:
 	}
 
 	template <typename U>
+	void operator+=(const complex<U> &val){
+		this->realPart += val.real();
+		this->imagPart += val.imag();
+	}
+
+	template <typename U>
 	complex operator*(U val) const {
 		return complex(this->realPart * val, this->imagPart * val);
+	}
+
+	template <typename U>
+	complex operator*(complex<U> val) const {
+		return complex(this->real() * val.real() - this->imag() * val.imag(), this->real() * val.imag() + this->imag() * val.real());
 	}
 
 	template <typename U>
@@ -42,5 +51,10 @@ public:
 		return !this->operator==(val);
 	}
 
+	complex conj() const {
+		return complex(this->realPart, - this->imagPart);
+	}
+
 };
 
+using complexf = complex<float>;
