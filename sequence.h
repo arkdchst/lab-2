@@ -102,14 +102,14 @@ public:
 
 	virtual void append(const T &item) override {
 		this->array->resize(this->getSize() + 1);
-		this->array->set(item, this->getSize());
+		this->array->set(item, this->getSize() - 1);
 	}
 
 	virtual void prepend(const T &item) override {
 		this->array->resize(this->getSize() + 1);
 		T t1 = this->array->get(0);
 		T t2;
-		for(int i = 0; i < this->getSize(); i++){
+		for(int i = 0; i < this->getSize() - 1; i++){
 			t2 = t1;
 			t1 = this->array->get(i + 1);
 			this->array->set(t2, i + 1);
@@ -123,7 +123,7 @@ public:
 		this->array->resize(this->getSize() + 1);
 		T t1 = this->array->get(index);
 		T t2;
-		for(int i = index; i < this->getSize(); i++){
+		for(int i = index; i < this->getSize() - 1; i++){
 			t2 = t1;
 			t1 = this->array->get(i + 1);
 			this->array->set(t2, i + 1);
