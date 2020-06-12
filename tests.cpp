@@ -19,13 +19,21 @@ BOOST_AUTO_TEST_CASE(dynamic_array){
 
 	DynamicArray<int> arr1(initArr1, 5);
 
-	BOOST_TEST(arr1 == DynamicArray<int>(arr1));
-	BOOST_TEST(arr1 == DynamicArray<int>(arr1, 5));
-	BOOST_TEST(DynamicArray<int>() == DynamicArray<int>((int*)0, 0));
-	BOOST_TEST(arr1.get(0) == 1);
-	BOOST_TEST(arr1.get(3) == 4);
-	BOOST_TEST(arr1.get(4) == 5);
-	BOOST_TEST(arr1.getSize() == 5);
+		BOOST_CHECK_THROW(DynamicArray<int>(-1), std::exception);
+		BOOST_CHECK_THROW(arr1.get(-1), std::exception);
+		BOOST_CHECK_THROW(arr1.get(5), std::exception);
+
+		BOOST_TEST(arr1 == DynamicArray<int>(arr1));
+		BOOST_TEST(arr1 == DynamicArray<int>(arr1, 5));
+		BOOST_TEST(DynamicArray<int>() == DynamicArray<int>((int*)0, 0));
+		BOOST_TEST(arr1.get(0) == 1);
+		BOOST_TEST(arr1.get(3) == 4);
+		BOOST_TEST(arr1.get(4) == 5);
+		BOOST_TEST(arr1.getSize() == 5);
+
+
+		BOOST_REQUIRE_THROW(arr1.set(5, 5), std::exception);
+		BOOST_REQUIRE_THROW(arr1.resize(-6), std::exception);
 
 	arr1.resize(6);
 	arr1.set(0, 0);
@@ -46,14 +54,24 @@ BOOST_AUTO_TEST_CASE(linked_list){
 
 	LinkedList<int> list1(initArr1, 4);	
 
-	BOOST_TEST(list1 == LinkedList<int>(list1));
-	BOOST_TEST(LinkedList<int>() == LinkedList<int>((int*)0, 0));
-	BOOST_TEST(list1.get(0) == 1);
-	BOOST_TEST(list1.getFirst() == 1);
-	BOOST_TEST(list1.get(2) == 3);
-	BOOST_TEST(list1.get(3) == 5);
-	BOOST_TEST(list1.getLast() == 5);
-	BOOST_TEST(list1.getSize() == 4);
+		BOOST_CHECK_THROW(LinkedList<int>(-1), std::exception);
+		BOOST_CHECK_THROW(LinkedList<int>(initArr1, -1), std::exception);
+
+		BOOST_CHECK_THROW(list1.get(-1), std::exception);
+		BOOST_CHECK_THROW(list1.get(4), std::exception);
+		BOOST_CHECK_THROW(LinkedList<int>().getFirst(), std::exception);
+		BOOST_CHECK_THROW(LinkedList<int>().getLast(), std::exception);
+
+		BOOST_TEST(list1 == LinkedList<int>(list1));
+		BOOST_TEST(LinkedList<int>() == LinkedList<int>((int*)0, 0));
+		BOOST_TEST(list1.get(0) == 1);
+		BOOST_TEST(list1.getFirst() == 1);
+		BOOST_TEST(list1.get(2) == 3);
+		BOOST_TEST(list1.get(3) == 5);
+		BOOST_TEST(list1.getLast() == 5);
+		BOOST_TEST(list1.getSize() == 4);
+
+		BOOST_REQUIRE_THROW(list1.insertAt(4, 5), std::exception);
 
 	list1.prepend(0);
 	list1.append(6);
@@ -62,6 +80,10 @@ BOOST_AUTO_TEST_CASE(linked_list){
 	list1.insertAt(4,5);
 		BOOST_TEST(list1 == LinkedList<int>(initArr2,9));
 
+		BOOST_CHECK_THROW(list1.getSublist(3, 1), std::exception);
+		BOOST_CHECK_THROW(list1.getSublist(1, 10), std::exception);
+		BOOST_CHECK_THROW(list1.getSublist(-1, 3), std::exception);
+
 	LinkedList<int> *list2 = list1.getSublist(0,0);
 	LinkedList<int> *list3 = list1.getSublist(0,1);
 	LinkedList<int> *list4 = list1.getSublist(0,9);
@@ -69,10 +91,15 @@ BOOST_AUTO_TEST_CASE(linked_list){
 		BOOST_TEST(*list3 == LinkedList<int>(initArr3,1));
 		BOOST_TEST(*list4 == list1);
 
+		BOOST_REQUIRE_THROW(list1.set(4, 10), std::exception);
+
 	list1.set(-2,0);
 	list1.set(8,8);
 	list1.set(0,7);
 		BOOST_TEST(list1 == LinkedList<int>(initArr35,9));
+
+		BOOST_REQUIRE_THROW(list1.removeAt(-1), std::exception);
+		BOOST_REQUIRE_THROW(list1.removeAt(10), std::exception);
 
 	list1.removeAt(0);
 	list1.removeAt(7);
@@ -106,14 +133,24 @@ BOOST_AUTO_TEST_CASE(array_sequence){
 
 	ArraySequence<int> seq1(initArr1, 4);	
 
-	BOOST_TEST(seq1 == ArraySequence<int>(seq1));
-	BOOST_TEST(ArraySequence<int>() == ArraySequence<int>((int*)0, 0));
-	BOOST_TEST(seq1.get(0) == 1);
-	BOOST_TEST(seq1.getFirst() == 1);
-	BOOST_TEST(seq1.get(2) == 3);
-	BOOST_TEST(seq1.get(3) == 5);
-	BOOST_TEST(seq1.getLast() == 5);
-	BOOST_TEST(seq1.getSize() == 4);
+		BOOST_CHECK_THROW(ArraySequence<int>(initArr1, -1), std::exception);
+
+		BOOST_CHECK_THROW(ArraySequence<int>(0).getFirst(), std::exception);
+		BOOST_CHECK_THROW(ArraySequence<int>(0).getLast(), std::exception);
+		BOOST_CHECK_THROW(seq1.get(-1), std::exception);
+		BOOST_CHECK_THROW(seq1.get(10), std::exception);
+
+		BOOST_TEST(seq1 == ArraySequence<int>(seq1));
+		BOOST_TEST(ArraySequence<int>() == ArraySequence<int>((int*)0, 0));
+		BOOST_TEST(seq1.get(0) == 1);
+		BOOST_TEST(seq1.getFirst() == 1);
+		BOOST_TEST(seq1.get(2) == 3);
+		BOOST_TEST(seq1.get(3) == 5);
+		BOOST_TEST(seq1.getLast() == 5);
+		BOOST_TEST(seq1.getSize() == 4);
+
+		BOOST_REQUIRE_THROW(seq1.insertAt(0, -1), std::exception);
+		BOOST_REQUIRE_THROW(seq1.insertAt(0, 5), std::exception);
 
 	seq1.prepend(0);
 	seq1.append(6);
@@ -121,13 +158,24 @@ BOOST_AUTO_TEST_CASE(array_sequence){
 	seq1.insertAt(7,7);
 	seq1.insertAt(4,5);
 		BOOST_TEST(seq1 == ArraySequence<int>(initArr2,9));
-		
+	
+		BOOST_CHECK_THROW(seq1.getSubsequence(3, 1), std::exception);
+		BOOST_CHECK_THROW(seq1.getSubsequence(1, 10), std::exception);
+		BOOST_CHECK_THROW(seq1.getSubsequence(-1, 3), std::exception);
+
+
 	ArraySequence<int> *seq2 = seq1.getSubsequence(0,0);
 	ArraySequence<int> *seq3 = seq1.getSubsequence(0,1);
 	ArraySequence<int> *seq4 = seq1.getSubsequence(0,9);
+		
 		BOOST_TEST(*seq2 == ArraySequence<int>());
 		BOOST_TEST(*seq3 == ArraySequence<int>(initArr3,1));
 		BOOST_TEST(*seq4 == seq1);
+
+
+		BOOST_REQUIRE_THROW(seq1.set(0, -1), std::exception);
+		BOOST_REQUIRE_THROW(seq1.set(0, 10), std::exception);
+
 
 	seq1.set(-2,0);
 	seq1.set(8,8);
@@ -161,14 +209,23 @@ BOOST_AUTO_TEST_CASE(list_sequence){
 
 	ListSequence<int> seq1(initArr1, 4);	
 
-	BOOST_TEST(seq1 == ListSequence<int>(seq1));
-	BOOST_TEST(ListSequence<int>() == ListSequence<int>((int*)0, 0));
-	BOOST_TEST(seq1.get(0) == 1);
-	BOOST_TEST(seq1.getFirst() == 1);
-	BOOST_TEST(seq1.get(2) == 3);
-	BOOST_TEST(seq1.get(3) == 5);
-	BOOST_TEST(seq1.getLast() == 5);
-	BOOST_TEST(seq1.getSize() == 4);
+		BOOST_CHECK_THROW(ListSequence<int>(initArr1, -1), std::exception);
+		BOOST_CHECK_THROW(ListSequence<int>(0).getFirst(), std::exception);
+		BOOST_CHECK_THROW(ListSequence<int>(0).getLast(), std::exception);
+		BOOST_CHECK_THROW(seq1.get(-1), std::exception);
+		BOOST_CHECK_THROW(seq1.get(10), std::exception);
+
+		BOOST_TEST(seq1 == ListSequence<int>(seq1));
+		BOOST_TEST(ListSequence<int>() == ListSequence<int>((int*)0, 0));
+		BOOST_TEST(seq1.get(0) == 1);
+		BOOST_TEST(seq1.getFirst() == 1);
+		BOOST_TEST(seq1.get(2) == 3);
+		BOOST_TEST(seq1.get(3) == 5);
+		BOOST_TEST(seq1.getLast() == 5);
+		BOOST_TEST(seq1.getSize() == 4);
+
+		BOOST_REQUIRE_THROW(seq1.insertAt(0, -1), std::exception);
+		BOOST_REQUIRE_THROW(seq1.insertAt(0, 5), std::exception);
 
 	seq1.prepend(0);
 	seq1.append(6);
@@ -176,13 +233,20 @@ BOOST_AUTO_TEST_CASE(list_sequence){
 	seq1.insertAt(7,7);
 	seq1.insertAt(4,5);
 		BOOST_TEST(seq1 == ListSequence<int>(initArr2,9));
-		
+	
+		BOOST_CHECK_THROW(seq1.getSubsequence(3, 1), std::exception);
+		BOOST_CHECK_THROW(seq1.getSubsequence(1, 10), std::exception);
+		BOOST_CHECK_THROW(seq1.getSubsequence(-1, 3), std::exception);
+
 	ListSequence<int> *seq2 = seq1.getSubsequence(0,0);
 	ListSequence<int> *seq3 = seq1.getSubsequence(0,1);
 	ListSequence<int> *seq4 = seq1.getSubsequence(0,9);
 		BOOST_TEST(*seq2 == ListSequence<int>());
 		BOOST_TEST(*seq3 == ListSequence<int>(initArr3,1));
 		BOOST_TEST(*seq4 == seq1);
+
+		BOOST_REQUIRE_THROW(seq1.set(0, -1), std::exception);
+		BOOST_REQUIRE_THROW(seq1.set(0, 10), std::exception);
 
 	seq1.set(-2,0);
 	seq1.set(8,8);
@@ -229,16 +293,24 @@ BOOST_AUTO_TEST_CASE(diagonal_matrix){
 	DiagonalMatrix<int> *mat3 = mat1 + mat2;
 	DiagonalMatrix<int> *mat4 = *mat3 * 2;
 
-	BOOST_TEST(mat4->getWidth() == 5);
-	BOOST_TEST(mat4->getHeight() == 3);
-	BOOST_TEST(mat4->getDiag() == 5);
-	BOOST_TEST(mat4->get(0, 0) == 4);
-	BOOST_TEST(mat4->get(1, 2) == 18);
-	BOOST_TEST(mat4->get(0, 2) == 16);
-	BOOST_TEST(mat4->get(4, 0) == 0);
-	BOOST_TEST(mat4->get(2, 2) == 26);
+		BOOST_CHECK_THROW(mat4->get(0, -1), std::exception);
+		BOOST_CHECK_THROW(mat4->get(-1, 0), std::exception);
+		BOOST_CHECK_THROW(mat4->get(10, 0), std::exception);
+		BOOST_CHECK_THROW(mat4->get(0, 10), std::exception);
+		BOOST_CHECK_THROW(mat4->set(0, 10, 0), std::exception);
+		BOOST_CHECK_THROW(mat4->set(0, 0, 10), std::exception);
+		BOOST_CHECK_NO_THROW(mat4->get(0, 0));
 
-	BOOST_TEST(mat4->getNorm<float>() == 54.6, boost::test_tools::tolerance(0.1));
+		BOOST_TEST(mat4->getWidth() == 5);
+		BOOST_TEST(mat4->getHeight() == 3);
+		BOOST_TEST(mat4->getDiag() == 5);
+		BOOST_TEST(mat4->get(0, 0) == 4);
+		BOOST_TEST(mat4->get(1, 2) == 18);
+		BOOST_TEST(mat4->get(0, 2) == 16);
+		BOOST_TEST(mat4->get(4, 0) == 0);
+		BOOST_TEST(mat4->get(2, 2) == 26);
+
+		BOOST_TEST(mat4->getNorm<float>() == 54.6, boost::test_tools::tolerance(0.1));
 
 	delete mat3;
 	delete mat4;
