@@ -1,9 +1,10 @@
 
 #include <stdexcept>
+#include <string>
 
-const char *INDEX_OUT_OF_RANGE_MESSAGE = "index out of range";
-const char *NEGATIVE_SIZE_MESSAGE = "size is negative";
-const char *ZERO_SIZE_MESSAGE = "size is 0";
+const std::string INDEX_OUT_OF_RANGE_MESSAGE = "index out of range";
+const std::string NEGATIVE_SIZE_MESSAGE = "size is negative";
+const std::string ZERO_SIZE_MESSAGE = "size is 0";
 
 
 template <typename T> class DynamicArray{
