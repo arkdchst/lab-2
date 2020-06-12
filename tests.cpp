@@ -1,34 +1,41 @@
-
 #include "base.h"
 #include "sequence.h"
 #include "matrix.h"
-#include <cassert>
+
+#define BOOST_TEST_MODULE tests
+#include <boost/test/included/unit_test.hpp>
+
+BOOST_TEST_DONT_PRINT_LOG_VALUE( DynamicArray<int> )
+BOOST_TEST_DONT_PRINT_LOG_VALUE( LinkedList<int> )
+BOOST_TEST_DONT_PRINT_LOG_VALUE( ArraySequence<int> )
+BOOST_TEST_DONT_PRINT_LOG_VALUE( ListSequence<int> )
 
 
-void testDynamicArray(){
+
+BOOST_AUTO_TEST_CASE(dynamic_array){
 	int initArr1[] = {1,2,3,4,5};
 	int initArr2[] = {0,2,3,4,5,6};
 	int initArr3[] = {0,2,3,4};
 
 	DynamicArray<int> arr1(initArr1, 5);
 
-	assert(arr1 == DynamicArray<int>(arr1));
-	assert(arr1 == DynamicArray<int>(arr1, 5));
-	assert(DynamicArray<int>() == DynamicArray<int>((int*)0, 0));
-	assert(arr1.get(0) == 1);
-	assert(arr1.get(3) == 4);
-	assert(arr1.get(4) == 5);
-	assert(arr1.getSize() == 5);
+	BOOST_TEST(arr1 == DynamicArray<int>(arr1));
+	BOOST_TEST(arr1 == DynamicArray<int>(arr1, 5));
+	BOOST_TEST(DynamicArray<int>() == DynamicArray<int>((int*)0, 0));
+	BOOST_TEST(arr1.get(0) == 1);
+	BOOST_TEST(arr1.get(3) == 4);
+	BOOST_TEST(arr1.get(4) == 5);
+	BOOST_TEST(arr1.getSize() == 5);
 
 	arr1.resize(6);
 	arr1.set(0, 0);
 	arr1.set(6, 5);
-		assert(arr1 == DynamicArray<int>(initArr2, 6));
+		BOOST_TEST(arr1 == DynamicArray<int>(initArr2, 6));
 	arr1.resize(4);
-		assert(arr1 == DynamicArray<int>(initArr3, 4));
+		BOOST_TEST(arr1 == DynamicArray<int>(initArr3, 4));
 }
 
-void testLinkedList(){
+BOOST_AUTO_TEST_CASE(linked_list){
 	int initArr1[] = {1,2,3,5};
 	int initArr2[] = {-1,0,1,2,3,4,5,6,7};
 	int initArr3[] = {-1};
@@ -39,45 +46,45 @@ void testLinkedList(){
 
 	LinkedList<int> list1(initArr1, 4);	
 
-	assert(list1 == LinkedList<int>(list1));
-	assert(LinkedList<int>() == LinkedList<int>((int*)0, 0));
-	assert(list1.get(0) == 1);
-	assert(list1.getFirst() == 1);
-	assert(list1.get(2) == 3);
-	assert(list1.get(3) == 5);
-	assert(list1.getLast() == 5);
-	assert(list1.getSize() == 4);
+	BOOST_TEST(list1 == LinkedList<int>(list1));
+	BOOST_TEST(LinkedList<int>() == LinkedList<int>((int*)0, 0));
+	BOOST_TEST(list1.get(0) == 1);
+	BOOST_TEST(list1.getFirst() == 1);
+	BOOST_TEST(list1.get(2) == 3);
+	BOOST_TEST(list1.get(3) == 5);
+	BOOST_TEST(list1.getLast() == 5);
+	BOOST_TEST(list1.getSize() == 4);
 
 	list1.prepend(0);
 	list1.append(6);
 	list1.insertAt(-1,0);
 	list1.insertAt(7,7);
 	list1.insertAt(4,5);
-		assert(list1 == LinkedList<int>(initArr2,9));
+		BOOST_TEST(list1 == LinkedList<int>(initArr2,9));
 
 	LinkedList<int> *list2 = list1.getSublist(0,0);
 	LinkedList<int> *list3 = list1.getSublist(0,1);
 	LinkedList<int> *list4 = list1.getSublist(0,9);
-		assert(*list2 == LinkedList<int>());
-		assert(*list3 == LinkedList<int>(initArr3,1));
-		assert(*list4 == list1);
+		BOOST_TEST(*list2 == LinkedList<int>());
+		BOOST_TEST(*list3 == LinkedList<int>(initArr3,1));
+		BOOST_TEST(*list4 == list1);
 
 	list1.set(-2,0);
 	list1.set(8,8);
 	list1.set(0,7);
-		assert(list1 == LinkedList<int>(initArr35,9));
+		BOOST_TEST(list1 == LinkedList<int>(initArr35,9));
 
 	list1.removeAt(0);
 	list1.removeAt(7);
 	list1.removeAt(4);
-		assert(list1 == LinkedList<int>(initArr4,6));
+		BOOST_TEST(list1 == LinkedList<int>(initArr4,6));
 
 	LinkedList<int> *list5 = list1.concat(LinkedList<int>());
 	LinkedList<int> *list6 = list1.concat(LinkedList<int>(initArr3, 1));
 	LinkedList<int> *list7 = list1.concat(LinkedList<int>(initArr1, 4));
-		assert(*list5 == list1);
-		assert(*list6 == LinkedList<int>(initArr5,7));
-		assert(*list7 == LinkedList<int>(initArr6,10));
+		BOOST_TEST(*list5 == list1);
+		BOOST_TEST(*list6 == LinkedList<int>(initArr5,7));
+		BOOST_TEST(*list7 == LinkedList<int>(initArr6,10));
 
 	delete list2;
 	delete list3;
@@ -88,7 +95,7 @@ void testLinkedList(){
 }
 
 
-void testArraySequence(){
+BOOST_AUTO_TEST_CASE(array_sequence){
 	int initArr1[] = {1,2,3,5};
 	int initArr2[] = {-1,0,1,2,3,4,5,6,7};
 	int initArr3[] = {-1};
@@ -99,40 +106,40 @@ void testArraySequence(){
 
 	ArraySequence<int> seq1(initArr1, 4);	
 
-	assert(seq1 == ArraySequence<int>(seq1));
-	assert(ArraySequence<int>() == ArraySequence<int>((int*)0, 0));
-	assert(seq1.get(0) == 1);
-	assert(seq1.getFirst() == 1);
-	assert(seq1.get(2) == 3);
-	assert(seq1.get(3) == 5);
-	assert(seq1.getLast() == 5);
-	assert(seq1.getSize() == 4);
+	BOOST_TEST(seq1 == ArraySequence<int>(seq1));
+	BOOST_TEST(ArraySequence<int>() == ArraySequence<int>((int*)0, 0));
+	BOOST_TEST(seq1.get(0) == 1);
+	BOOST_TEST(seq1.getFirst() == 1);
+	BOOST_TEST(seq1.get(2) == 3);
+	BOOST_TEST(seq1.get(3) == 5);
+	BOOST_TEST(seq1.getLast() == 5);
+	BOOST_TEST(seq1.getSize() == 4);
 
 	seq1.prepend(0);
 	seq1.append(6);
 	seq1.insertAt(-1,0);
 	seq1.insertAt(7,7);
 	seq1.insertAt(4,5);
-		assert(seq1 == ArraySequence<int>(initArr2,9));
+		BOOST_TEST(seq1 == ArraySequence<int>(initArr2,9));
 		
 	ArraySequence<int> *seq2 = seq1.getSubsequence(0,0);
 	ArraySequence<int> *seq3 = seq1.getSubsequence(0,1);
 	ArraySequence<int> *seq4 = seq1.getSubsequence(0,9);
-		assert(*seq2 == ArraySequence<int>());
-		assert(*seq3 == ArraySequence<int>(initArr3,1));
-		assert(*seq4 == seq1);
+		BOOST_TEST(*seq2 == ArraySequence<int>());
+		BOOST_TEST(*seq3 == ArraySequence<int>(initArr3,1));
+		BOOST_TEST(*seq4 == seq1);
 
 	seq1.set(-2,0);
 	seq1.set(8,8);
 	seq1.set(0,7);
-		assert(seq1 == ArraySequence<int>(initArr35,9));
+		BOOST_TEST(seq1 == ArraySequence<int>(initArr35,9));
 
 	ArraySequence<int> *seq5 = seq1.concat(ArraySequence<int>());
 	ArraySequence<int> *seq6 = seq1.concat(ArraySequence<int>(initArr3, 1));
 	ArraySequence<int> *seq7 = seq1.concat(ArraySequence<int>(initArr1, 4));
-		assert(*seq5 == seq1);
-		assert(*seq6 == ArraySequence<int>(initArr5,10));
-		assert(*seq7 == ArraySequence<int>(initArr6,13));
+		BOOST_TEST(*seq5 == seq1);
+		BOOST_TEST(*seq6 == ArraySequence<int>(initArr5,10));
+		BOOST_TEST(*seq7 == ArraySequence<int>(initArr6,13));
 
 	delete seq2;
 	delete seq3;
@@ -143,7 +150,7 @@ void testArraySequence(){
 }
 
 
-void testListSequence(){
+BOOST_AUTO_TEST_CASE(list_sequence){
 	int initArr1[] = {1,2,3,5};
 	int initArr2[] = {-1,0,1,2,3,4,5,6,7};
 	int initArr3[] = {-1};
@@ -154,40 +161,40 @@ void testListSequence(){
 
 	ListSequence<int> seq1(initArr1, 4);	
 
-	assert(seq1 == ListSequence<int>(seq1));
-	assert(ListSequence<int>() == ListSequence<int>((int*)0, 0));
-	assert(seq1.get(0) == 1);
-	assert(seq1.getFirst() == 1);
-	assert(seq1.get(2) == 3);
-	assert(seq1.get(3) == 5);
-	assert(seq1.getLast() == 5);
-	assert(seq1.getSize() == 4);
+	BOOST_TEST(seq1 == ListSequence<int>(seq1));
+	BOOST_TEST(ListSequence<int>() == ListSequence<int>((int*)0, 0));
+	BOOST_TEST(seq1.get(0) == 1);
+	BOOST_TEST(seq1.getFirst() == 1);
+	BOOST_TEST(seq1.get(2) == 3);
+	BOOST_TEST(seq1.get(3) == 5);
+	BOOST_TEST(seq1.getLast() == 5);
+	BOOST_TEST(seq1.getSize() == 4);
 
 	seq1.prepend(0);
 	seq1.append(6);
 	seq1.insertAt(-1,0);
 	seq1.insertAt(7,7);
 	seq1.insertAt(4,5);
-		assert(seq1 == ListSequence<int>(initArr2,9));
+		BOOST_TEST(seq1 == ListSequence<int>(initArr2,9));
 		
 	ListSequence<int> *seq2 = seq1.getSubsequence(0,0);
 	ListSequence<int> *seq3 = seq1.getSubsequence(0,1);
 	ListSequence<int> *seq4 = seq1.getSubsequence(0,9);
-		assert(*seq2 == ListSequence<int>());
-		assert(*seq3 == ListSequence<int>(initArr3,1));
-		assert(*seq4 == seq1);
+		BOOST_TEST(*seq2 == ListSequence<int>());
+		BOOST_TEST(*seq3 == ListSequence<int>(initArr3,1));
+		BOOST_TEST(*seq4 == seq1);
 
 	seq1.set(-2,0);
 	seq1.set(8,8);
 	seq1.set(0,7);
-		assert(seq1 == ListSequence<int>(initArr35,9));
+		BOOST_TEST(seq1 == ListSequence<int>(initArr35,9));
 
 	ListSequence<int> *seq5 = seq1.concat(ListSequence<int>());
 	ListSequence<int> *seq6 = seq1.concat(ListSequence<int>(initArr3, 1));
 	ListSequence<int> *seq7 = seq1.concat(ListSequence<int>(initArr1, 4));
-		assert(*seq5 == seq1);
-		assert(*seq6 == ListSequence<int>(initArr5,10));
-		assert(*seq7 == ListSequence<int>(initArr6,13));
+		BOOST_TEST(*seq5 == seq1);
+		BOOST_TEST(*seq6 == ListSequence<int>(initArr5,10));
+		BOOST_TEST(*seq7 == ListSequence<int>(initArr6,13));
 
 	delete seq2;
 	delete seq3;
@@ -199,7 +206,7 @@ void testListSequence(){
 }
 
 
-void testDiagonalMatrix(){
+BOOST_AUTO_TEST_CASE(diagonal_matrix){
 	DiagonalMatrix<int> mat1(5, 3, 5);
 	mat1.set(1, 0, 0);
 	mat1.set(2, 1, 0);
@@ -222,30 +229,17 @@ void testDiagonalMatrix(){
 	DiagonalMatrix<int> *mat3 = mat1 + mat2;
 	DiagonalMatrix<int> *mat4 = *mat3 * 2;
 
-	assert(mat4->getWidth() == 5);
-	assert(mat4->getHeight() == 3);
-	assert(mat4->getDiag() == 5);
-	assert(mat4->get(0, 0) == 4);
-	assert(mat4->get(1, 2) == 18);
-	assert(mat4->get(0, 2) == 16);
-	assert(mat4->get(4, 0) == 0);
-	assert(mat4->get(2, 2) == 26);
+	BOOST_TEST(mat4->getWidth() == 5);
+	BOOST_TEST(mat4->getHeight() == 3);
+	BOOST_TEST(mat4->getDiag() == 5);
+	BOOST_TEST(mat4->get(0, 0) == 4);
+	BOOST_TEST(mat4->get(1, 2) == 18);
+	BOOST_TEST(mat4->get(0, 2) == 16);
+	BOOST_TEST(mat4->get(4, 0) == 0);
+	BOOST_TEST(mat4->get(2, 2) == 26);
 
-	//TODO
-	// assert(std::abs(mat4->getNorm() - 54) < 0.7);
+	BOOST_TEST(mat4->getNorm<float>() == 54.6, boost::test_tools::tolerance(0.1));
 
 	delete mat3;
 	delete mat4;
-}
-
-
-
-int main(int argc, const char *argv[]){
-	testDynamicArray();
-	testLinkedList();
-	testArraySequence();
-	testListSequence();
-	testDiagonalMatrix();
-
-	return 0;
 }
